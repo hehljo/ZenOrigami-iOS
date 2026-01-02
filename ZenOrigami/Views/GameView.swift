@@ -8,6 +8,9 @@ struct GameView: View {
     @State private var showUpgrades = false
     @State private var showSettings = false
     @State private var showStatistics = false
+    @State private var showDailyReward = false
+    @State private var showPrestige = false
+    @State private var showTutorial = false
 
     var body: some View {
         ZStack {
@@ -107,6 +110,30 @@ struct GameView: View {
                     HStack(spacing: 12) {
                         Button {
                             HapticFeedback.selection()
+                            showDailyReward = true
+                        } label: {
+                            Image(systemName: "gift.fill")
+                                .font(.title3)
+                                .foregroundStyle(.white)
+                                .frame(width: 44, height: 44)
+                                .background(.ultraThinMaterial)
+                                .clipShape(Circle())
+                        }
+
+                        Button {
+                            HapticFeedback.selection()
+                            showPrestige = true
+                        } label: {
+                            Image(systemName: "star.fill")
+                                .font(.title3)
+                                .foregroundStyle(.white)
+                                .frame(width: 44, height: 44)
+                                .background(.ultraThinMaterial)
+                                .clipShape(Circle())
+                        }
+
+                        Button {
+                            HapticFeedback.selection()
                             showStatistics = true
                         } label: {
                             Image(systemName: "chart.bar.fill")
@@ -167,6 +194,15 @@ struct GameView: View {
         .sheet(isPresented: $showStatistics) {
             StatisticsView(gameState: viewModel.gameState)
         }
+        .sheet(isPresented: $showDailyReward) {
+            DailyRewardView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $showPrestige) {
+            PrestigeView(viewModel: viewModel)
+        }
+        .fullScreenCover(isPresented: $showTutorial) {
+            TutorialView()
+        }
         .sheet(isPresented: $viewModel.showWelcomeBack) {
             WelcomeBackView(
                 offlineEarnings: viewModel.offlineEarnings ?? 0,
@@ -175,6 +211,13 @@ struct GameView: View {
         }
         .onAppear {
             fallingItemManager.startSpawning()
+
+            // Show tutorial for first-time users
+            if !UserDefaults.standard.bool(forKey: "hasSeenTutorial") {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    showTutorial = true
+                }
+            }
         }
         .onDisappear {
             fallingItemManager.stopSpawning()
