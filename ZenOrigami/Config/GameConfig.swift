@@ -162,3 +162,199 @@ enum OneTimeItem {
     case origamiFish
     case origamiBird
 }
+
+// MARK: - Achievements System
+extension GameConfig {
+    enum Achievement: String, CaseIterable, Codable {
+        // Collection Achievements
+        case firstCollect = "first_collect"
+        case collector100 = "collector_100"
+        case collector1000 = "collector_1000"
+        case collector10000 = "collector_10000"
+        case pearlHunter = "pearl_hunter"
+        case leafGatherer = "leaf_gatherer"
+
+        // Upgrade Achievements
+        case firstUpgrade = "first_upgrade"
+        case upgrader10 = "upgrader_10"
+        case upgrader50 = "upgrader_50"
+        case maxSpeed = "max_speed"
+        case maxRadius = "max_radius"
+
+        // Companion Achievements
+        case fishFriend = "fish_friend"
+        case birdBuddy = "bird_buddy"
+        case fullCrew = "full_crew"
+
+        // Cosmetic Achievements
+        case fashionista = "fashionista"
+        case flagBearer = "flag_bearer"
+
+        // Progression Achievements
+        case firstPrestige = "first_prestige"
+        case prestigeMaster = "prestige_master"
+        case idleMaster = "idle_master"
+
+        // Time Achievements
+        case playTime1Hour = "playtime_1hour"
+        case playTime10Hours = "playtime_10hours"
+        case weeklyPlayer = "weekly_player"
+
+        var title: String {
+            switch self {
+            case .firstCollect: return "First Steps"
+            case .collector100: return "Collector"
+            case .collector1000: return "Master Collector"
+            case .collector10000: return "Drop Legend"
+            case .pearlHunter: return "Pearl Hunter"
+            case .leafGatherer: return "Leaf Gatherer"
+            case .firstUpgrade: return "Getting Started"
+            case .upgrader10: return "Upgrader"
+            case .upgrader50: return "Master Upgrader"
+            case .maxSpeed: return "Speed Demon"
+            case .maxRadius: return "Wide Net"
+            case .fishFriend: return "Fish Friend"
+            case .birdBuddy: return "Bird Buddy"
+            case .fullCrew: return "Full Crew"
+            case .fashionista: return "Fashionista"
+            case .flagBearer: return "Flag Bearer"
+            case .firstPrestige: return "New Beginning"
+            case .prestigeMaster: return "Prestige Master"
+            case .idleMaster: return "Idle Master"
+            case .playTime1Hour: return "Dedicated"
+            case .playTime10Hours: return "Devotee"
+            case .weeklyPlayer: return "Weekly Regular"
+            }
+        }
+
+        var description: String {
+            switch self {
+            case .firstCollect: return "Collect your first drop"
+            case .collector100: return "Collect 100 total drops"
+            case .collector1000: return "Collect 1,000 total drops"
+            case .collector10000: return "Collect 10,000 total drops"
+            case .pearlHunter: return "Collect 50 pearls"
+            case .leafGatherer: return "Collect 50 leaves"
+            case .firstUpgrade: return "Purchase your first upgrade"
+            case .upgrader10: return "Purchase 10 upgrades"
+            case .upgrader50: return "Purchase 50 upgrades"
+            case .maxSpeed: return "Reach speed level 25"
+            case .maxRadius: return "Reach radius level 25"
+            case .fishFriend: return "Unlock the Origami Fish companion"
+            case .birdBuddy: return "Unlock the Origami Bird companion"
+            case .fullCrew: return "Unlock all companions"
+            case .fashionista: return "Unlock the Swan skin"
+            case .flagBearer: return "Unlock the origami flag"
+            case .firstPrestige: return "Complete your first prestige"
+            case .prestigeMaster: return "Reach prestige level 5"
+            case .idleMaster: return "Earn 10,000 drops while offline"
+            case .playTime1Hour: return "Play for 1 hour"
+            case .playTime10Hours: return "Play for 10 hours"
+            case .weeklyPlayer: return "Log in for 7 consecutive days"
+            }
+        }
+
+        var emoji: String {
+            switch self {
+            case .firstCollect: return "💧"
+            case .collector100: return "💦"
+            case .collector1000: return "🌊"
+            case .collector10000: return "🌀"
+            case .pearlHunter: return "🔵"
+            case .leafGatherer: return "🍃"
+            case .firstUpgrade: return "⬆️"
+            case .upgrader10: return "📈"
+            case .upgrader50: return "🚀"
+            case .maxSpeed: return "⚡"
+            case .maxRadius: return "📡"
+            case .fishFriend: return "🐟"
+            case .birdBuddy: return "🐦"
+            case .fullCrew: return "👥"
+            case .fashionista: return "🦢"
+            case .flagBearer: return "🚩"
+            case .firstPrestige: return "⭐"
+            case .prestigeMaster: return "🌟"
+            case .idleMaster: return "😴"
+            case .playTime1Hour: return "⏰"
+            case .playTime10Hours: return "⏳"
+            case .weeklyPlayer: return "📅"
+            }
+        }
+
+        var reward: Int {
+            switch self {
+            case .firstCollect: return 10
+            case .collector100: return 50
+            case .collector1000: return 500
+            case .collector10000: return 5000
+            case .pearlHunter: return 100
+            case .leafGatherer: return 100
+            case .firstUpgrade: return 25
+            case .upgrader10: return 250
+            case .upgrader50: return 2500
+            case .maxSpeed: return 1000
+            case .maxRadius: return 1000
+            case .fishFriend: return 500
+            case .birdBuddy: return 500
+            case .fullCrew: return 2000
+            case .fashionista: return 300
+            case .flagBearer: return 200
+            case .firstPrestige: return 10000
+            case .prestigeMaster: return 50000
+            case .idleMaster: return 1000
+            case .playTime1Hour: return 100
+            case .playTime10Hours: return 1000
+            case .weeklyPlayer: return 500
+            }
+        }
+
+        func isUnlocked(gameState: GameState) -> Bool {
+            switch self {
+            case .firstCollect:
+                return gameState.totalCollected.drop >= 1
+            case .collector100:
+                return gameState.totalCollected.drop >= 100
+            case .collector1000:
+                return gameState.totalCollected.drop >= 1000
+            case .collector10000:
+                return gameState.totalCollected.drop >= 10000
+            case .pearlHunter:
+                return gameState.totalCollected.pearl >= 50
+            case .leafGatherer:
+                return gameState.totalCollected.leaf >= 50
+            case .firstUpgrade:
+                return gameState.totalUpgradesPurchased >= 1
+            case .upgrader10:
+                return gameState.totalUpgradesPurchased >= 10
+            case .upgrader50:
+                return gameState.totalUpgradesPurchased >= 50
+            case .maxSpeed:
+                return gameState.upgrades.speed >= 25
+            case .maxRadius:
+                return gameState.upgrades.radius >= 25
+            case .fishFriend:
+                return gameState.companions.origamiFish
+            case .birdBuddy:
+                return gameState.companions.origamiBird
+            case .fullCrew:
+                return gameState.companions.origamiFish && gameState.companions.origamiBird
+            case .fashionista:
+                return gameState.skins.swanSkin
+            case .flagBearer:
+                return gameState.addOns.flag
+            case .firstPrestige:
+                return gameState.prestigeLevel >= 1
+            case .prestigeMaster:
+                return gameState.prestigeLevel >= 5
+            case .idleMaster:
+                return gameState.totalCollected.drop >= 10000 // Will track separately
+            case .playTime1Hour:
+                return gameState.playTime >= 3600 // 1 hour in seconds
+            case .playTime10Hours:
+                return gameState.playTime >= 36000 // 10 hours
+            case .weeklyPlayer:
+                return gameState.loginStreak >= 7
+            }
+        }
+    }
+}

@@ -1,113 +1,171 @@
 import SwiftUI
 
-/// Main game screen with boat, falling items, and UI
+/// Main gameplay screen with falling items and boat
 struct GameView: View {
     @Bindable var viewModel: GameViewModel
-    @Environment(\.dismiss) private var dismiss
-
-    @State private var boatPosition: CGFloat = 0.5 // 0.0 to 1.0 (left to right)
-    @State private var showMenu = false
+    @State private var fallingItemManager = FallingItemManager()
+    @State private var boatPosition: CGFloat = 0.5
+    @State private var showUpgrades = false
+    @State private var showSettings = false
+    @State private var showStatistics = false
 
     var body: some View {
         ZStack {
-            // Background gradient (lake)
+            // Background gradient (lake/sky)
             LinearGradient(
                 colors: [
-                    Color(red: 0.4, green: 0.7, blue: 0.9),
-                    Color(red: 0.2, green: 0.5, blue: 0.8)
+                    Color(red: 0.6, green: 0.8, blue: 0.9),
+                    Color(red: 0.4, green: 0.7, blue: 0.85)
                 ],
                 startPoint: .top,
                 endPoint: .bottom
             )
             .ignoresSafeArea()
 
+            // Game elements
             GeometryReader { geometry in
                 ZStack {
-                    // Falling drops
-                    ForEach(viewModel.fallingDrops) { drop in
-                        FallingItemView(
-                            item: drop,
-                            emoji: "💧",
-                            screenWidth: geometry.size.width
-                        )
-                        .onTapGesture {
-                            collectItem(drop, currency: .drop)
-                        }
+                    // Falling Drops
+                    ForEach(fallingItemManager.fallingDrops) { item in
+                        FallingItemView(item: item, emoji: "💧")
+                            .onTapGesture {
+                                if fallingItemManager.collectDrop(at: item.id) {
+                                    viewModel.collect(currency: .drop, amount: 1)
+                                    SoundManager.shared.playDropCollect()
+                                    HapticFeedback.light()
+                                }
+                            }
                     }
 
-                    // Falling leaves
-                    ForEach(viewModel.fallingLeaves) { leaf in
-                        FallingItemView(
-                            item: leaf,
-                            emoji: "🍃",
-                            screenWidth: geometry.size.width
-                        )
-                        .onTapGesture {
-                            collectItem(leaf, currency: .leaf)
-                        }
+                    // Falling Pearls
+                    ForEach(fallingItemManager.fallingPearls) { item in
+                        FallingItemView(item: item, emoji: "🔵")
+                            .onTapGesture {
+                                if fallingItemManager.collectPearl(at: item.id) {
+                                    viewModel.collect(currency: .pearl, amount: 1)
+                                    SoundManager.shared.playPearlCollect()
+                                    HapticFeedback.light()
+                                }
+                            }
                     }
 
-                    // Falling pearls
-                    ForEach(viewModel.fallingPearls) { pearl in
-                        FallingItemView(
-                            item: pearl,
-                            emoji: "🔵",
-                            screenWidth: geometry.size.width
-                        )
-                        .onTapGesture {
-                            collectItem(pearl, currency: .pearl)
-                        }
+                    // Falling Leaves
+                    ForEach(fallingItemManager.fallingLeaves) { item in
+                        FallingItemView(item: item, emoji: "🍃")
+                            .onTapGesture {
+                                if fallingItemManager.collectLeaf(at: item.id) {
+                                    viewModel.collect(currency: .leaf, amount: 1)
+                                    SoundManager.shared.playLeafCollect()
+                                    HapticFeedback.light()
+                                }
+                            }
                     }
 
-                    // Boat (player)
+                    // Boat (Player)
                     BoatView(skin: viewModel.gameState.activeSkin)
-                        .frame(width: 80, height: 80)
                         .position(
-                            x: geometry.size.width * boatPosition,
-                            y: geometry.size.height * 0.7
+                            x: boatPosition * geometry.size.width,
+                            y: geometry.size.height * 0.75
                         )
                         .gesture(
                             DragGesture()
                                 .onChanged { value in
-                                    // Move boat horizontally
-                                    let newPosition = value.location.x / geometry.size.width
-                                    boatPosition = max(0.1, min(0.9, newPosition))
+                                    boatPosition = max(0.1, min(0.9, value.location.x / geometry.size.width))
                                 }
                         )
+
+                    // Companions
+                    if viewModel.gameState.companions.origamiFish {
+                        Text("🐟")
+                            .font(.system(size: 32))
+                            .position(
+                                x: (boatPosition * geometry.size.width) - 40,
+                                y: (geometry.size.height * 0.75) + 20
+                            )
+                    }
+
+                    if viewModel.gameState.companions.origamiBird {
+                        Text("🐦")
+                            .font(.system(size: 32))
+                            .position(
+                                x: (boatPosition * geometry.size.width) + 40,
+                                y: (geometry.size.height * 0.75) - 40
+                            )
+                    }
                 }
             }
 
             // Top HUD
             VStack {
                 HStack {
-                    // Currency display
-                    CurrencyView(
-                        icon: "💧",
-                        amount: viewModel.gameState.currencies.drop
-                    )
+                    // Currency Display
+                    CurrencyDisplayView(currencies: viewModel.gameState.currencies)
 
                     Spacer()
 
-                    // Menu button
-                    Button {
-                        showMenu = true
-                    } label: {
-                        Image(systemName: "line.3.horizontal")
-                            .font(.title2)
-                            .foregroundStyle(.white)
-                            .padding()
-                            .background(.ultraThinMaterial)
-                            .clipShape(Circle())
+                    // Menu Buttons
+                    HStack(spacing: 12) {
+                        Button {
+                            HapticFeedback.selection()
+                            showStatistics = true
+                        } label: {
+                            Image(systemName: "chart.bar.fill")
+                                .font(.title3)
+                                .foregroundStyle(.white)
+                                .frame(width: 44, height: 44)
+                                .background(.ultraThinMaterial)
+                                .clipShape(Circle())
+                        }
+
+                        Button {
+                            HapticFeedback.selection()
+                            showSettings = true
+                        } label: {
+                            Image(systemName: "gearshape.fill")
+                                .font(.title3)
+                                .foregroundStyle(.white)
+                                .frame(width: 44, height: 44)
+                                .background(.ultraThinMaterial)
+                                .clipShape(Circle())
+                        }
                     }
                 }
                 .padding()
 
                 Spacer()
+
+                // Bottom UI
+                VStack {
+                    Spacer()
+
+                    Button {
+                        HapticFeedback.selection()
+                        showUpgrades = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "arrow.up.circle.fill")
+                            Text("Upgrades")
+                                .font(.headline)
+                        }
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 12)
+                        .background(Color.blue)
+                        .clipShape(Capsule())
+                        .shadow(radius: 4)
+                    }
+                    .padding(.bottom, 32)
+                }
             }
         }
-        .sheet(isPresented: $showMenu) {
-            MenuView()
-                .presentationDetents([.medium, .large])
+        .sheet(isPresented: $showUpgrades) {
+            UpgradeSheetView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
+        }
+        .sheet(isPresented: $showStatistics) {
+            StatisticsView(gameState: viewModel.gameState)
         }
         .sheet(isPresented: $viewModel.showWelcomeBack) {
             WelcomeBackView(
@@ -115,29 +173,12 @@ struct GameView: View {
                 minutesOffline: viewModel.minutesOffline
             )
         }
-    }
-
-    private func collectItem(_ item: FallingItem, currency: Currency) {
-        // Collect currency
-        viewModel.collect(currency: currency, amount: 1)
-
-        // TODO: Animate collection
-        // TODO: Remove item from falling items list
-    }
-}
-
-struct FallingItemView: View {
-    let item: FallingItem
-    let emoji: String
-    let screenWidth: CGFloat
-
-    var body: some View {
-        Text(emoji)
-            .font(.largeTitle)
-            .position(
-                x: screenWidth * item.x,
-                y: 100 // TODO: Animate falling
-            )
+        .onAppear {
+            fallingItemManager.startSpawning()
+        }
+        .onDisappear {
+            fallingItemManager.stopSpawning()
+        }
     }
 }
 
@@ -145,131 +186,9 @@ struct BoatView: View {
     let skin: Skin
 
     var body: some View {
-        ZStack {
-            // Simple boat representation
-            // TODO: Create proper SVG boat shape
-            switch skin {
-            case .default:
-                Text("🚤")
-                    .font(.system(size: 60))
-            case .swanSkin:
-                Text("🦢")
-                    .font(.system(size: 60))
-            }
-        }
-    }
-}
-
-struct CurrencyView: View {
-    let icon: String
-    let amount: Int
-
-    var body: some View {
-        HStack(spacing: 8) {
-            Text(icon)
-                .font(.title2)
-
-            Text("\(amount)")
-                .font(.headline)
-                .foregroundStyle(.white)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-        .background(.ultraThinMaterial)
-        .clipShape(Capsule())
-    }
-}
-
-struct MenuView: View {
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            List {
-                Section("Game") {
-                    NavigationLink("Upgrades") {
-                        Text("Upgrades Screen")
-                    }
-                    NavigationLink("Achievements") {
-                        Text("Achievements Screen")
-                    }
-                    NavigationLink("Statistics") {
-                        Text("Statistics Screen")
-                    }
-                }
-
-                Section("Settings") {
-                    NavigationLink("Profile") {
-                        Text("Profile Screen")
-                    }
-                    Button("Sign Out") {
-                        // TODO: Sign out
-                    }
-                    .foregroundStyle(.red)
-                }
-            }
-            .navigationTitle("Menu")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") {
-                        dismiss()
-                    }
-                }
-            }
-        }
-    }
-}
-
-struct WelcomeBackView: View {
-    @Environment(\.dismiss) private var dismiss
-    let offlineEarnings: Int
-    let minutesOffline: Double
-
-    var body: some View {
-        VStack(spacing: 24) {
-            Image(systemName: "sparkles")
-                .font(.system(size: 60))
-                .foregroundStyle(.yellow)
-
-            Text("Welcome Back!")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-
-            VStack(spacing: 8) {
-                Text("While you were away...")
-                    .font(.headline)
-                    .foregroundStyle(.secondary)
-
-                HStack {
-                    Text("💧")
-                        .font(.title)
-                    Text("+\(offlineEarnings)")
-                        .font(.title)
-                        .fontWeight(.bold)
-                }
-                .padding()
-                .background(.green.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-
-                Text("(\(Int(minutesOffline)) minutes)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            Button {
-                dismiss()
-            } label: {
-                Text("Continue")
-                    .font(.headline)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(.blue)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-            }
-            .padding(.horizontal, 32)
-        }
-        .padding()
+        Text(skin == .default ? "🚤" : "🦢")
+            .font(.system(size: 60))
+            .shadow(radius: 2)
     }
 }
 

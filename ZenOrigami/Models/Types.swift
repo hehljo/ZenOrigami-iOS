@@ -223,6 +223,7 @@ struct GameState: Codable, Equatable {
     var totalCollected: Currencies
     var playTime: Int // seconds
     var totalUpgradesPurchased: Int
+    var loginStreak: Int // consecutive login days
 
     // Prestige
     var prestige: PrestigeState
@@ -231,6 +232,11 @@ struct GameState: Codable, Equatable {
     var lastVisit: Date
     var createdAt: Date
     var updatedAt: Date
+
+    // Computed properties for convenience
+    var prestigeLevel: Int {
+        prestige.level
+    }
 
     static var initial: GameState {
         GameState(
@@ -244,6 +250,7 @@ struct GameState: Codable, Equatable {
             totalCollected: .zero,
             playTime: 0,
             totalUpgradesPurchased: 0,
+            loginStreak: 0,
             prestige: .initial,
             lastVisit: Date(),
             createdAt: Date(),

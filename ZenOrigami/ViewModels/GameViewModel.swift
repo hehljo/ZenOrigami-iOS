@@ -236,9 +236,37 @@ class GameViewModel {
     // MARK: - Achievement System
 
     private func checkAchievements() {
-        // TODO: Implement achievement checking logic
-        // This will be similar to the TypeScript version
-        // Check all achievement conditions and unlock if met
+        for achievement in GameConfig.Achievement.allCases {
+            // Skip if already unlocked
+            if let state = gameState.achievements[achievement.rawValue], state.unlocked {
+                continue
+            }
+
+            // Check if achievement should be unlocked
+            if achievement.isUnlocked(gameState: gameState) {
+                unlockAchievement(achievement)
+            }
+        }
+    }
+
+    private func unlockAchievement(_ achievement: GameConfig.Achievement) {
+        // Mark as unlocked
+        gameState.achievements[achievement.rawValue] = AchievementState(
+            id: achievement.rawValue,
+            unlocked: true,
+            unlockedAt: Date()
+        )
+
+        // Award reward
+        gameState.currencies.drop += achievement.reward
+
+        // Play feedback
+        SoundManager.shared.playAchievementUnlock()
+        HapticFeedback.success()
+
+        print("[GameVM] 🏆 Achievement unlocked: \(achievement.title) (+\(achievement.reward) drops)")
+
+        // TODO: Show achievement toast notification
     }
 
     // MARK: - Auto-Save & Play Time
