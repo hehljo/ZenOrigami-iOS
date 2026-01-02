@@ -134,14 +134,19 @@ ZenOrigami-iOS/
 ├── .github/workflows/
 │   └── ios-build.yml              # GitHub Actions CI/CD
 ├── .swiftlint.yml                 # Code style rules
+├── SETUP_OPTIONS.md               # Setup guide (Offline vs Supabase)
+├── ASSET_PROMPTS.md               # AI prompts for asset generation
+├── VISUAL_STYLE_GUIDE.md          # Design system documentation
 ├── ZenOrigami/                    # Main app target
 │   ├── Models/
 │   │   └── Types.swift            # Game state models (400+ lines)
 │   ├── ViewModels/
-│   │   └── GameViewModel.swift    # Central state management
+│   │   ├── GameViewModel.swift    # Central state management (Supabase)
+│   │   └── OfflineGameViewModel.swift  # Offline-only variant
 │   ├── Services/
 │   │   ├── AuthService.swift      # OAuth + session management
-│   │   └── DatabaseService.swift  # Supabase persistence
+│   │   ├── DatabaseService.swift  # Supabase persistence
+│   │   └── LocalStorageService.swift   # Offline persistence
 │   ├── Views/
 │   │   ├── ContentView.swift      # Root view
 │   │   ├── AuthView.swift         # Login screen
@@ -174,6 +179,42 @@ ZenOrigami-iOS/
 - Rate Bonus: +1.0 drops/min per level
 - Companions: +10% multiplicative bonus each
 - **Max Offline Cap:** 24 hours
+
+## 🎨 Assets & Design
+
+### Visual Style
+This game uses the **"Origami Zen Foldable Minimalist"** aesthetic:
+- Clean geometric shapes (paper-folded look)
+- Flat colors, no gradients or shadows
+- Transparent backgrounds
+- Soft, calming color palette
+- Visible fold lines for depth
+
+**Complete style documentation:** See [`VISUAL_STYLE_GUIDE.md`](./VISUAL_STYLE_GUIDE.md)
+
+### Generating Assets
+Use AI image generation (Google Gemini, DALL-E, etc.) with the prompts in [`ASSET_PROMPTS.md`](./ASSET_PROMPTS.md).
+
+**Included prompts for:**
+- 🚤 Paper Boat (player sprite + variations)
+- 🦢 Origami Swan (skin alternative)
+- 💧🔵🍃 Falling items (drop, pearl, leaf)
+- 🐟🐦 Companions (origami fish, bird)
+- 🏔️☁️🌊 Background elements
+- 🎯 UI elements (buttons, badges, icons)
+- 🎬 Animation frames
+
+**Example prompt structure:**
+```
+Create a simple origami paper boat in zen minimalist style.
+Clean geometric paper folds with crisp edges.
+Color: Soft white paper with cream highlights.
+Style: Flat design, no shadows, no gradients.
+Background: Transparent.
+Size: 128x128px equivalent.
+```
+
+All prompts are optimized for transparency, clean lines, and origami authenticity.
 
 ## 🔧 Development
 
