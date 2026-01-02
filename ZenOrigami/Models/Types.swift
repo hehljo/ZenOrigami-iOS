@@ -293,6 +293,7 @@ struct GameStateDTO: Codable {
     let totalLeavesCollected: Int
     let totalPlayTime: Int
     let totalUpgradesPurchased: Int
+    let loginStreak: Int
 
     // Prestige
     let prestigeLevel: Int
@@ -322,6 +323,7 @@ struct GameStateDTO: Codable {
         case totalLeavesCollected = "total_leaves_collected"
         case totalPlayTime = "total_play_time"
         case totalUpgradesPurchased = "total_upgrades_purchased"
+        case loginStreak = "login_streak"
         case prestigeLevel = "prestige_level"
         case zenPoints = "zen_points"
         case totalPrestiges = "total_prestiges"
@@ -355,6 +357,7 @@ extension GameState {
             totalLeavesCollected: totalCollected.leaf,
             totalPlayTime: playTime,
             totalUpgradesPurchased: totalUpgradesPurchased,
+            loginStreak: loginStreak,
             prestigeLevel: prestige.level,
             zenPoints: prestige.zenPoints,
             totalPrestiges: prestige.totalPrestiges,
@@ -397,6 +400,7 @@ extension GameState {
             ),
             playTime: dto.totalPlayTime,
             totalUpgradesPurchased: dto.totalUpgradesPurchased,
+            loginStreak: dto.loginStreak,
             prestige: PrestigeState(
                 level: dto.prestigeLevel,
                 zenPoints: dto.zenPoints,
