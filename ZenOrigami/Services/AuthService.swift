@@ -45,7 +45,7 @@ class AuthService {
 
     /// Sign in with OAuth provider (Google, GitHub)
     /// - Parameter provider: OAuth provider
-    func signIn(with provider: Supabase.Provider) async throws {
+    func signIn(with provider: Auth.Provider) async throws {
         isLoading = true
         errorMessage = nil
 

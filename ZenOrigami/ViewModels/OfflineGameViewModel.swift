@@ -223,9 +223,10 @@ class OfflineGameViewModel {
 
     // MARK: - Cleanup
 
-    @MainActor
     deinit {
-        saveTimer?.invalidate()
-        playTimeTimer?.invalidate()
+        Task { @MainActor in
+            saveTimer?.invalidate()
+            playTimeTimer?.invalidate()
+        }
     }
 }
