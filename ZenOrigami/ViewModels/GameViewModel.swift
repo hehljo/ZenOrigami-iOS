@@ -21,11 +21,6 @@ class GameViewModel {
     var minutesOffline: Double = 0
     var showWelcomeBack = false
 
-    // MARK: - Falling Items (for animation)
-    var fallingDrops: [FallingItem] = []
-    var fallingLeaves: [FallingItem] = []
-    var fallingPearls: [FallingItem] = []
-
     // MARK: - Initialization
     init(databaseService: DatabaseService, authService: AuthService) {
         self.databaseService = databaseService
@@ -310,12 +305,4 @@ class GameViewModel {
             playTimeTimer?.invalidate()
         }
     }
-}
-
-// MARK: - Supporting Types
-
-struct FallingItem: Identifiable {
-    let id: UUID = UUID()
-    var x: Double // percentage from left
-    var collected: Bool = false
 }
