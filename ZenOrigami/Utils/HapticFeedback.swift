@@ -1,7 +1,10 @@
+#if canImport(UIKit)
 import UIKit
+#endif
 
 /// Haptic feedback utilities for tactile user feedback
 enum HapticFeedback {
+    #if canImport(UIKit)
     /// Light impact (e.g., item collect)
     static func light() {
         let generator = UIImpactFeedbackGenerator(style: .light)
@@ -43,4 +46,14 @@ enum HapticFeedback {
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(.error)
     }
+    #else
+    // Fallbacks for non-UIKit platforms
+    static func light() {}
+    static func medium() {}
+    static func heavy() {}
+    static func selection() {}
+    static func success() {}
+    static func warning() {}
+    static func error() {}
+    #endif
 }

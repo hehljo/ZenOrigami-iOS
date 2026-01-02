@@ -16,7 +16,6 @@ class FallingItemManager {
     // MARK: - Configuration
     private let spawnInterval: TimeInterval
     private let fallDuration: TimeInterval = 3.0
-    private let screenWidth: CGFloat = UIScreen.main.bounds.width
 
     init(spawnInterval: TimeInterval = 2.0) {
         self.spawnInterval = spawnInterval
