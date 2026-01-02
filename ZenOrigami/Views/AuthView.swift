@@ -1,4 +1,5 @@
 import SwiftUI
+import Supabase
 import AuthenticationServices
 
 /// Authentication screen with OAuth login
