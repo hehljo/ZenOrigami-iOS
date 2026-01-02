@@ -1,0 +1,172 @@
+name: iOS Build & Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: macos-14 # macOS Sonoma with Xcode 15.2
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: '15.2'
+
+    - name: Cache Swift Package Manager
+      uses: actions/cache@v4
+      with:
+        path: |
+          .build
+          ~/Library/Developer/Xcode/DerivedData
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+
+    - name: Resolve Swift Dependencies
+      run: swift package resolve
+
+    - name: Build Swift Package
+      run: swift build -v
+
+    - name: Run Tests
+      run: swift test -v --enable-code-coverage
+
+    - name: Generate Code Coverage
+      run: |
+        xcrun llvm-cov export \
+          .build/debug/ZenOrigamiPackageTests.xctest/Contents/MacOS/ZenOrigamiPackageTests \
+          -instr-profile .build/debug/codecov/default.profdata \
+          -format="lcov" > coverage.lcov
+
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        files: ./coverage.lcov
+        fail_ci_if_error: false
+
+  lint:
+    name: SwiftLint
+    runs-on: macos-14
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install SwiftLint
+      run: brew install swiftlint
+
+    - name: Run SwiftLint
+      run: swiftlint lint --reporter github-actions-logging
+
+  build-ios-app:
+    name: Build iOS App (if Xcode project exists)
+    runs-on: macos-14
+    if: hashFiles('**/*.xcodeproj') != ''
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: '15.2'
+
+    - name: Cache DerivedData
+      uses: actions/cache@v4
+      with:
+        path: ~/Library/Developer/Xcode/DerivedData
+        key: ${{ runner.os }}-derived-data-${{ hashFiles('**/*.xcodeproj') }}
+
+    - name: Build iOS App
+      run: |
+        xcodebuild \
+          -project ZenOrigami.xcodeproj \
+          -scheme ZenOrigami \
+          -sdk iphonesimulator \
+          -destination 'platform=iOS Simulator,name=iPhone 15 Pro,OS=17.2' \
+          -configuration Debug \
+          clean build \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          | xcpretty --color
+
+    - name: Run UI Tests
+      run: |
+        xcodebuild test \
+          -project ZenOrigami.xcodeproj \
+          -scheme ZenOrigami \
+          -sdk iphonesimulator \
+          -destination 'platform=iOS Simulator,name=iPhone 15 Pro,OS=17.2' \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          | xcpretty --color
+
+  syntax-check:
+    name: Swift Syntax Check
+    runs-on: macos-14
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Check Swift Syntax
+      run: |
+        # Find all Swift files and check syntax
+        find . -name "*.swift" -type f | while read file; do
+          echo "Checking: $file"
+          swiftc -typecheck "$file" -sdk $(xcrun --show-sdk-path --sdk iphonesimulator) || exit 1
+        done
+
+    - name: Check for Common Issues
+      run: |
+        echo "🔍 Checking for common Swift issues..."
+
+        # Check for force unwraps (!)
+        if grep -r "!" --include="*.swift" ZenOrigami/ | grep -v "//"; then
+          echo "⚠️ Found force unwraps - consider using optional binding"
+        fi
+
+        # Check for force casts (as!)
+        if grep -r "as!" --include="*.swift" ZenOrigami/ | grep -v "//"; then
+          echo "⚠️ Found force casts - consider using conditional casts"
+        fi
+
+        # Check for print statements (use proper logging)
+        if grep -r "print(" --include="*.swift" ZenOrigami/ | grep -v "//.*print" | grep -v "\"" ; then
+          echo "ℹ️ Found print statements - consider using OSLog"
+        fi
+
+  security-check:
+    name: Security Audit
+    runs-on: macos-14
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Check for hardcoded secrets
+      run: |
+        echo "🔒 Checking for potential secrets..."
+
+        # Check for API keys, tokens, passwords
+        if grep -r -i "api[_-]key\|token\|password\|secret" --include="*.swift" ZenOrigami/ | grep -v "//"; then
+          echo "⚠️ Found potential hardcoded secrets - review carefully"
+        fi
+
+        # Check for URLs that might contain credentials
+        if grep -r "https://.*:.*@" --include="*.swift" ZenOrigami/; then
+          echo "⚠️ Found URLs with credentials - use secure credential storage"
+          exit 1
+        fi
