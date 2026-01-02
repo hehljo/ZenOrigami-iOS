@@ -94,7 +94,8 @@ class FallingItemManager {
             x: randomX,
             y: -0.1, // Start above screen
             targetY: 1.1, // End below screen
-            duration: fallDuration
+            duration: fallDuration,
+            worldSpawnPosition: 0.0 // Will be set by ScrollingWorldManager if used
         )
     }
 
@@ -160,11 +161,12 @@ class FallingItemManager {
 
 struct FallingItem: Identifiable {
     let id = UUID()
-    var x: CGFloat // Normalized position (0.0 - 1.0)
+    var x: CGFloat // Normalized position (0.0 - 1.0) or world offset for scrolling
     var y: CGFloat // Normalized position (0.0 - 1.0)
     let targetY: CGFloat
     let duration: TimeInterval
     var isCollected: Bool = false
+    var worldSpawnPosition: CGFloat = 0.0 // For sidescrolling mode
 
     var startTime: Date = Date()
 }

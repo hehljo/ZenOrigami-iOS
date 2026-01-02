@@ -4,6 +4,8 @@ import SwiftUI
 struct SettingsView: View {
     @Bindable var soundManager: SoundManager
     @State private var hapticsEnabled = true
+    @AppStorage("useScrollingMode") private var useScrollingMode = true
+    @AppStorage("showPerformanceOverlay") private var showPerformanceOverlay = false
     @Environment(\.dismiss) private var dismiss
 
     init() {
@@ -21,6 +23,19 @@ struct SettingsView: View {
                             if newValue {
                                 HapticFeedback.selection()
                             }
+                        }
+                }
+
+                Section("Gameplay") {
+                    Toggle("Sidescrolling Mode", isOn: $useScrollingMode)
+                        .onChange(of: useScrollingMode) { _, newValue in
+                            UserDefaults.standard.set(newValue, forKey: "useScrollingMode")
+                            HapticFeedback.selection()
+                        }
+
+                    Toggle("Performance Overlay", isOn: $showPerformanceOverlay)
+                        .onChange(of: showPerformanceOverlay) { _, newValue in
+                            UserDefaults.standard.set(newValue, forKey: "showPerformanceOverlay")
                         }
                 }
 

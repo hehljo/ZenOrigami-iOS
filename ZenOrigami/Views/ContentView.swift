@@ -4,6 +4,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(AuthService.self) private var authService
     @State private var gameViewModel: GameViewModel?
+    @AppStorage("useScrollingMode") private var useScrollingMode = true
 
     var body: some View {
         Group {
@@ -11,7 +12,11 @@ struct ContentView: View {
                 LoadingView()
             } else if authService.isAuthenticated {
                 if let viewModel = gameViewModel {
-                    GameView(viewModel: viewModel)
+                    if useScrollingMode {
+                        ScrollingGameView(viewModel: viewModel)
+                    } else {
+                        GameView(viewModel: viewModel)
+                    }
                 } else {
                     LoadingView()
                         .task {
