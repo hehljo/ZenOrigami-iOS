@@ -9,7 +9,7 @@ class AuthService {
     private let supabase: SupabaseClient
 
     // MARK: - Published State
-    var currentUser: User?
+    var currentUser: Supabase.User?
     var isAuthenticated: Bool { currentUser != nil }
     var isLoading = false
     var errorMessage: String?
@@ -35,10 +35,8 @@ class AuthService {
     func checkSession() async {
         do {
             let session = try await supabase.auth.session
-            if let user = session.user {
-                self.currentUser = user
-                print("[Auth] ✅ Found existing session for user: \(user.id)")
-            }
+            self.currentUser = session.user
+            print("[Auth] ✅ Found existing session for user: \(session.user.id)")
         } catch {
             print("[Auth] ⚠️ No existing session found")
             self.currentUser = nil
@@ -47,7 +45,7 @@ class AuthService {
 
     /// Sign in with OAuth provider (Google, GitHub)
     /// - Parameter provider: OAuth provider
-    func signIn(with provider: Provider) async throws {
+    func signIn(with provider: Supabase.Provider) async throws {
         isLoading = true
         errorMessage = nil
 

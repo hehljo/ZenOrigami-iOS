@@ -11,8 +11,7 @@ struct ContentView: View {
                 LoadingView()
             } else if authService.isAuthenticated {
                 if let viewModel = gameViewModel {
-                    GameView()
-                        .environment(viewModel)
+                    GameView(viewModel: viewModel)
                 } else {
                     LoadingView()
                         .task {

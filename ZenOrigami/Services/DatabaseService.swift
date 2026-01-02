@@ -46,7 +46,7 @@ actor DatabaseService {
     ///   - userId: User ID
     ///   - gameState: Current game state
     func saveGameState(userId: UUID, gameState: GameState) async throws {
-        var dto = gameState.toDTO(userId: userId)
+        let dto = gameState.toDTO(userId: userId)
 
         do {
             // Upsert (insert or update)
@@ -96,17 +96,27 @@ actor DatabaseService {
     ///   - username: New username
     ///   - avatarUrl: New avatar URL
     func updateProfile(userId: UUID, username: String?, avatarUrl: String?) async throws {
-        var updates: [String: Any] = ["id": userId.uuidString]
-        if let username = username {
-            updates["username"] = username
+        struct ProfileUpdate: Codable {
+            let id: String
+            let username: String?
+            let avatarUrl: String?
+
+            enum CodingKeys: String, CodingKey {
+                case id
+                case username
+                case avatarUrl = "avatar_url"
+            }
         }
-        if let avatarUrl = avatarUrl {
-            updates["avatar_url"] = avatarUrl
-        }
+
+        let update = ProfileUpdate(
+            id: userId.uuidString,
+            username: username,
+            avatarUrl: avatarUrl
+        )
 
         try await supabase
             .from("profiles")
-            .update(updates)
+            .update(update)
             .eq("id", value: userId.uuidString)
             .execute()
 

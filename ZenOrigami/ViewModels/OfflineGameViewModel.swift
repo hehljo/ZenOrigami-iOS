@@ -1,14 +1,13 @@
 import Foundation
 import Combine
 
-/// Central game state management
-/// Ported from useGameState.ts hook
+/// Offline-only game view model (no Supabase required)
+/// Uses UserDefaults + iCloud for persistence
 @MainActor
 @Observable
-class GameViewModel {
+class OfflineGameViewModel {
     // MARK: - Services
-    private let databaseService: DatabaseService
-    private let authService: AuthService
+    private let storageService: LocalStorageService
 
     // MARK: - Game State
     private(set) var gameState: GameState
@@ -27,9 +26,8 @@ class GameViewModel {
     var fallingPearls: [FallingItem] = []
 
     // MARK: - Initialization
-    init(databaseService: DatabaseService, authService: AuthService) {
-        self.databaseService = databaseService
-        self.authService = authService
+    init(storageService: LocalStorageService) {
+        self.storageService = storageService
         self.gameState = .initial
 
         // Start play time tracking
@@ -38,62 +36,37 @@ class GameViewModel {
 
     // MARK: - Loading & Saving
 
-    /// Load game state (from DB or UserDefaults)
+    /// Load game state from local storage
     func loadGameState() async {
         isLoading = true
 
-        // If user is authenticated, load from database
-        if let userId = authService.userId {
-            do {
-                if let loadedState = try await databaseService.loadGameState(userId: userId) {
-                    // Calculate offline earnings
-                    let minutesOffline = Date().timeIntervalSince(loadedState.lastVisit) / 60
-                    let earnings = GameConfig.calculateIdleEarnings(
-                        upgrades: loadedState.upgrades,
-                        companions: loadedState.companions,
-                        minutesOffline: minutesOffline
-                    )
+        if let loadedState = await storageService.loadGameState() {
+            // Calculate offline earnings
+            let minutesOffline = Date().timeIntervalSince(loadedState.lastVisit) / 60
+            let earnings = GameConfig.calculateIdleEarnings(
+                upgrades: loadedState.upgrades,
+                companions: loadedState.companions,
+                minutesOffline: minutesOffline
+            )
 
-                    if earnings > 0 {
-                        self.offlineEarnings = earnings
-                        self.minutesOffline = minutesOffline
-                        self.showWelcomeBack = true
+            if earnings > 0 {
+                self.offlineEarnings = earnings
+                self.minutesOffline = minutesOffline
+                self.showWelcomeBack = true
 
-                        // Add offline earnings to state
-                        var updatedState = loadedState
-                        updatedState.currencies.drop += earnings
-                        updatedState.lastVisit = Date()
-                        self.gameState = updatedState
-                    } else {
-                        self.gameState = loadedState
-                    }
-
-                    print("[GameVM] ✅ Loaded from database")
-                } else {
-                    // Try loading from local storage and migrate
-                    if let localState = loadFromUserDefaults() {
-                        self.gameState = localState
-                        // Migrate to cloud
-                        try? await saveGameState()
-                        print("[GameVM] ✅ Migrated local state to cloud")
-                    } else {
-                        // New user, start fresh
-                        self.gameState = .initial
-                    }
-                }
-            } catch {
-                print("[GameVM] ❌ Error loading from database: \(error)")
-                // Fallback to local storage
-                if let localState = loadFromUserDefaults() {
-                    self.gameState = localState
-                }
+                // Add offline earnings to state
+                var updatedState = loadedState
+                updatedState.currencies.drop += earnings
+                updatedState.lastVisit = Date()
+                self.gameState = updatedState
+            } else {
+                self.gameState = loadedState
             }
+
+            print("[OfflineGameVM] ✅ Loaded from local storage")
         } else {
-            // Offline mode - load from UserDefaults
-            if let localState = loadFromUserDefaults() {
-                self.gameState = localState
-            }
-            print("[GameVM] ✅ Loaded from UserDefaults (offline mode)")
+            // New user, start fresh
+            self.gameState = .initial
         }
 
         isLoading = false
@@ -102,29 +75,21 @@ class GameViewModel {
         startAutoSave()
     }
 
-    /// Save game state (debounced)
+    /// Save game state
     @discardableResult
     func saveGameState(immediate: Bool = false) async -> Bool {
         // Update metadata
         gameState.updatedAt = Date()
         gameState.lastVisit = Date()
 
-        // Save to UserDefaults immediately (fast)
-        saveToUserDefaults()
-
-        // Save to database if authenticated
-        if let userId = authService.userId {
-            do {
-                try await databaseService.saveGameState(userId: userId, gameState: gameState)
-                print("[GameVM] ✅ Saved to database")
-                return true
-            } catch {
-                print("[GameVM] ❌ Error saving to database: \(error)")
-                return false
-            }
+        do {
+            try await storageService.saveGameState(gameState)
+            print("[OfflineGameVM] ✅ Saved to local storage")
+            return true
+        } catch {
+            print("[OfflineGameVM] ❌ Error saving: \(error)")
+            return false
         }
-
-        return true
     }
 
     // MARK: - Currency Operations
@@ -146,7 +111,7 @@ class GameViewModel {
         gameState.currencies[currency] += multipliedAmount
         gameState.totalCollected[currency] += multipliedAmount
 
-        print("[GameVM] ➕ Collected \(multipliedAmount) \(currency.rawValue)")
+        print("[OfflineGameVM] ➕ Collected \(multipliedAmount) \(currency.rawValue)")
 
         // Check achievements
         checkAchievements()
@@ -174,7 +139,7 @@ class GameViewModel {
         let cost = GameConfig.calculateUpgradeCost(for: upgradeId, level: currentLevel)
 
         guard canAfford(cost) else {
-            print("[GameVM] ❌ Cannot afford upgrade \(upgradeId)")
+            print("[OfflineGameVM] ❌ Cannot afford upgrade \(upgradeId)")
             return false
         }
 
@@ -182,7 +147,7 @@ class GameViewModel {
         gameState.upgrades[upgradeId] += 1
         gameState.totalUpgradesPurchased += 1
 
-        print("[GameVM] ✅ Purchased upgrade \(upgradeId), new level: \(gameState.upgrades[upgradeId])")
+        print("[OfflineGameVM] ✅ Purchased upgrade \(upgradeId), new level: \(gameState.upgrades[upgradeId])")
 
         checkAchievements()
         return true
@@ -193,7 +158,7 @@ class GameViewModel {
         let cost = GameConfig.calculateOneTimeCost(for: item)
 
         guard canAfford(cost) else {
-            print("[GameVM] ❌ Cannot afford item \(item)")
+            print("[OfflineGameVM] ❌ Cannot afford item \(item)")
             return false
         }
 
@@ -220,7 +185,7 @@ class GameViewModel {
         }
 
         gameState.totalUpgradesPurchased += 1
-        print("[GameVM] ✅ Purchased item \(item)")
+        print("[OfflineGameVM] ✅ Purchased item \(item)")
 
         checkAchievements()
         return true
@@ -230,21 +195,19 @@ class GameViewModel {
     func setActiveSkin(_ skin: Skin) {
         guard gameState.skins.isUnlocked(skin) else { return }
         gameState.activeSkin = skin
-        print("[GameVM] 🎨 Active skin changed to \(skin.rawValue)")
+        print("[OfflineGameVM] 🎨 Active skin changed to \(skin.rawValue)")
     }
 
     // MARK: - Achievement System
 
     private func checkAchievements() {
         // TODO: Implement achievement checking logic
-        // This will be similar to the TypeScript version
-        // Check all achievement conditions and unlock if met
     }
 
     // MARK: - Auto-Save & Play Time
 
     private func startAutoSave() {
-        // Debounced save every 2 seconds (like the React version)
+        // Debounced save every 2 seconds
         saveTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
             Task { @MainActor in
                 await self?.saveGameState()
@@ -258,22 +221,6 @@ class GameViewModel {
         }
     }
 
-    // MARK: - UserDefaults Persistence
-
-    private func saveToUserDefaults() {
-        if let encoded = try? JSONEncoder().encode(gameState) {
-            UserDefaults.standard.set(encoded, forKey: "zenOrigamiGameState")
-        }
-    }
-
-    private func loadFromUserDefaults() -> GameState? {
-        guard let data = UserDefaults.standard.data(forKey: "zenOrigamiGameState"),
-              let state = try? JSONDecoder().decode(GameState.self, from: data) else {
-            return nil
-        }
-        return state
-    }
-
     // MARK: - Cleanup
 
     @MainActor
@@ -281,12 +228,4 @@ class GameViewModel {
         saveTimer?.invalidate()
         playTimeTimer?.invalidate()
     }
-}
-
-// MARK: - Supporting Types
-
-struct FallingItem: Identifiable {
-    let id: UUID = UUID()
-    var x: Double // percentage from left
-    var collected: Bool = false
 }

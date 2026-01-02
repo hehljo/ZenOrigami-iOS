@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Main game screen with boat, falling items, and UI
 struct GameView: View {
-    @Environment(GameViewModel.self) private var viewModel
+    @Bindable var viewModel: GameViewModel
     @Environment(\.dismiss) private var dismiss
 
     @State private var boatPosition: CGFloat = 0.5 // 0.0 to 1.0 (left to right)
@@ -274,15 +274,14 @@ struct WelcomeBackView: View {
 }
 
 #Preview {
-    GameView()
-        .environment(GameViewModel(
-            databaseService: DatabaseService(
-                supabaseURL: "https://example.supabase.co",
-                supabaseKey: "test-key"
-            ),
-            authService: AuthService(
-                supabaseURL: "https://example.supabase.co",
-                supabaseKey: "test-key"
-            )
-        ))
+    GameView(viewModel: GameViewModel(
+        databaseService: DatabaseService(
+            supabaseURL: "https://example.supabase.co",
+            supabaseKey: "test-key"
+        ),
+        authService: AuthService(
+            supabaseURL: "https://example.supabase.co",
+            supabaseKey: "test-key"
+        )
+    ))
 }

@@ -87,7 +87,7 @@ struct AuthView: View {
         .disabled(isSigningIn)
     }
 
-    private func signIn(with provider: Provider) async {
+    private func signIn(with provider: Supabase.Provider) async {
         isSigningIn = true
         do {
             try await authService.signIn(with: provider)
