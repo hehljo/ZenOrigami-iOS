@@ -28,7 +28,7 @@ let package = Package(
         .testTarget(
             name: "ZenOrigamiTests",
             dependencies: ["ZenOrigami"],
-            path: "Tests"
+            path: "Tests/ZenOrigamiTests"
         )
     ]
 )

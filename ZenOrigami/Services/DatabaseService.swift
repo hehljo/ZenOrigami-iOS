@@ -7,8 +7,11 @@ actor DatabaseService {
     private let supabase: SupabaseClient
 
     init(supabaseURL: String, supabaseKey: String) {
+        guard let url = URL(string: supabaseURL) else {
+            fatalError("Invalid Supabase URL: \(supabaseURL)")
+        }
         self.supabase = SupabaseClient(
-            supabaseURL: URL(string: supabaseURL)!,
+            supabaseURL: url,
             supabaseKey: supabaseKey
         )
     }

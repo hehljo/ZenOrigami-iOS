@@ -15,8 +15,11 @@ class AuthService {
     var errorMessage: String?
 
     init(supabaseURL: String, supabaseKey: String) {
+        guard let url = URL(string: supabaseURL) else {
+            fatalError("Invalid Supabase URL: \(supabaseURL)")
+        }
         self.supabase = SupabaseClient(
-            supabaseURL: URL(string: supabaseURL)!,
+            supabaseURL: url,
             supabaseKey: supabaseKey
         )
 
@@ -50,7 +53,9 @@ class AuthService {
 
         do {
             // For iOS, we use Universal Links / Deep Links
-            let redirectURL = URL(string: "zenorigami://auth/callback")!
+            guard let redirectURL = URL(string: "zenorigami://auth/callback") else {
+                throw NSError(domain: "AuthService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid redirect URL"])
+            }
 
             let session = try await supabase.auth.signInWithOAuth(
                 provider: provider,
