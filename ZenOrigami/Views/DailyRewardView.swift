@@ -99,11 +99,7 @@ struct DailyRewardView: View {
     }
 
     private func claimDailyReward() {
-        let currentDay = min(viewModel.gameState.loginStreak + 1, 7)
-        let reward = rewards[currentDay - 1].drops
-
-        viewModel.gameState.currencies.drop += reward
-        viewModel.gameState.loginStreak = currentDay
+        _ = viewModel.claimDailyReward()
 
         HapticFeedback.success()
         SoundManager.shared.playAchievementUnlock()

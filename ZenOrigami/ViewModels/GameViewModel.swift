@@ -147,6 +147,19 @@ class GameViewModel {
         checkAchievements()
     }
 
+    /// Claim daily login reward
+    func claimDailyReward() -> Int {
+        let currentDay = min(gameState.loginStreak + 1, 7)
+        let rewards = [(1, 100), (2, 200), (3, 400), (4, 800), (5, 1600), (6, 3200), (7, 10000)]
+        let reward = rewards[currentDay - 1].1
+
+        gameState.currencies.drop += reward
+        gameState.loginStreak = currentDay
+
+        print("[GameVM] 🎁 Claimed daily reward: \(reward) drops (Day \(currentDay))")
+        return reward
+    }
+
     /// Check if player can afford cost
     func canAfford(_ cost: Currencies) -> Bool {
         return gameState.currencies.drop >= cost.drop &&
@@ -247,9 +260,9 @@ class GameViewModel {
     private func unlockAchievement(_ achievement: GameConfig.Achievement) {
         // Mark as unlocked
         gameState.achievements[achievement.rawValue] = AchievementState(
-            id: achievement.rawValue,
             unlocked: true,
-            unlockedAt: Date()
+            unlockedAt: Date(),
+            progress: 0
         )
 
         // Award reward

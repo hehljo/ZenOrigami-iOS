@@ -13,20 +13,22 @@ struct FallingItemView: View {
     }
 
     var body: some View {
-        Text(emoji)
-            .font(.system(size: item.isCollected ? 48 : 32))
-            .opacity(item.isCollected ? 0 : 1)
-            .scaleEffect(item.isCollected ? 1.5 : 1.0)
-            .position(
-                x: item.x * UIScreen.main.bounds.width,
-                y: currentY * UIScreen.main.bounds.height
-            )
-            .onAppear {
-                withAnimation(.linear(duration: item.duration)) {
-                    currentY = item.targetY
+        GeometryReader { geometry in
+            Text(emoji)
+                .font(.system(size: item.isCollected ? 48 : 32))
+                .opacity(item.isCollected ? 0 : 1)
+                .scaleEffect(item.isCollected ? 1.5 : 1.0)
+                .position(
+                    x: item.x * geometry.size.width,
+                    y: currentY * geometry.size.height
+                )
+                .onAppear {
+                    withAnimation(.linear(duration: item.duration)) {
+                        currentY = item.targetY
+                    }
                 }
-            }
-            .animation(.spring(response: 0.3), value: item.isCollected)
+                .animation(.spring(response: 0.3), value: item.isCollected)
+        }
     }
 }
 
