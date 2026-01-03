@@ -152,23 +152,7 @@ struct PrestigeView: View {
     }
 
     private func performPrestige() {
-        let zenPoints = calculateZenPoints()
-
-        // Reset currencies
-        viewModel.gameState.currencies = .zero
-
-        // Reset upgrades
-        viewModel.gameState.upgrades = .initial
-
-        // Reset decorative add-ons
-        viewModel.gameState.addOns.flag = false
-
-        // Keep: skins, companions, achievements, prestige
-
-        // Increase prestige
-        viewModel.gameState.prestige.level += 1
-        viewModel.gameState.prestige.zenPoints += zenPoints
-        viewModel.gameState.prestige.totalPrestiges += 1
+        let zenPoints = viewModel.performPrestige()
 
         // Play feedback
         SoundManager.shared.playPrestige()

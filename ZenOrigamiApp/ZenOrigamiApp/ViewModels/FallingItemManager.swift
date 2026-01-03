@@ -28,15 +28,17 @@ class FallingItemManager {
         stopSpawning() // Clean up existing timers
 
         spawnTimer = Timer.scheduledTimer(withTimeInterval: spawnInterval, repeats: true) { [weak self] _ in
+            guard let self else { return }
             Task { @MainActor in
-                self?.spawnRandomItem()
+                self.spawnRandomItem()
             }
         }
 
         // Cleanup timer to remove items that went off-screen
         cleanupTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            guard let self else { return }
             Task { @MainActor in
-                self?.cleanupOffscreenItems()
+                self.cleanupOffscreenItems()
             }
         }
 
@@ -151,9 +153,9 @@ class FallingItemManager {
     // MARK: - Cleanup
 
     deinit {
-        Task { @MainActor in
-            stopSpawning()
-        }
+        // Note: Timers will be invalidated automatically when deallocated
+        // Accessing @MainActor properties from deinit is not safe in Swift 6
+        // Call stopSpawning() before releasing if cleanup is needed
     }
 }
 

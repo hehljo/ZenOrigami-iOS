@@ -25,31 +25,6 @@ enum AppLogger {
     static let error = Logger(subsystem: subsystem, category: "error")
 }
 
-// MARK: - Convenience Extensions
-
-extension Logger {
-    /// Log with emoji prefix for better readability
-    func info(_ message: String, emoji: String = "ℹ️") {
-        self.info("\(emoji) \(message)")
-    }
-
-    func debug(_ message: String, emoji: String = "🔍") {
-        self.debug("\(emoji) \(message)")
-    }
-
-    func warning(_ message: String, emoji: String = "⚠️") {
-        self.warning("\(emoji) \(message)")
-    }
-
-    func error(_ message: String, emoji: String = "❌") {
-        self.error("\(emoji) \(message)")
-    }
-
-    func critical(_ message: String, emoji: String = "🔥") {
-        self.critical("\(emoji) \(message)")
-    }
-}
-
 // MARK: - Performance Monitoring
 
 @MainActor
@@ -79,13 +54,13 @@ class PerformanceMonitor {
             }
         }
 
-        AppLogger.performance.info("Started performance monitoring", emoji: "📊")
+        AppLogger.performance.info("📊 Started performance monitoring")
     }
 
     func stopMonitoring() {
         displayLink?.invalidate()
         displayLink = nil
-        AppLogger.performance.info("Stopped performance monitoring", emoji: "📊")
+        AppLogger.performance.info("📊 Stopped performance monitoring")
     }
 
     @objc private func update(displayLink: CADisplayLink) {
@@ -103,7 +78,7 @@ class PerformanceMonitor {
             lastFrameTime = displayLink.timestamp
 
             if fps < 55.0 {
-                AppLogger.performance.warning("Low FPS detected: \(String(format: "%.1f", fps))", emoji: "🐌")
+                AppLogger.performance.warning("🐌 Low FPS detected: \(String(format: "%.1f", fps))")
             }
         }
     }
@@ -122,10 +97,7 @@ class PerformanceMonitor {
             memoryUsageMB = Double(info.resident_size) / 1024.0 / 1024.0
 
             if memoryUsageMB > 100.0 {
-                AppLogger.performance.warning(
-                    "High memory usage: \(String(format: "%.1f", memoryUsageMB)) MB",
-                    emoji: "💾"
-                )
+                AppLogger.performance.warning("💾 High memory usage: \(String(format: "%.1f", memoryUsageMB)) MB")
             }
         }
     }
@@ -191,7 +163,7 @@ enum AnalyticsEvent {
 
     func track() {
         // Placeholder for analytics integration (Firebase, Telemetry, etc.)
-        AppLogger.game.info("Analytics: \(String(describing: self))", emoji: "📈")
+        AppLogger.game.info("📈 Analytics: \(String(describing: self))")
 
         // TODO: Integrate actual analytics service
         // Example: Analytics.logEvent(name, parameters)

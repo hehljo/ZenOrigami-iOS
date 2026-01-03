@@ -241,6 +241,33 @@ class GameViewModel {
         print("[GameVM] 🎨 Active skin changed to \(skin.rawValue)")
     }
 
+    // MARK: - Prestige System
+
+    /// Perform prestige (reset progress for permanent bonuses)
+    func performPrestige() -> Int {
+        let totalDrops = gameState.totalCollected.drop
+        let zenPoints = Int(sqrt(Double(totalDrops) / 10000))
+
+        // Reset currencies
+        gameState.currencies = .zero
+
+        // Reset upgrades
+        gameState.upgrades = .initial
+
+        // Reset decorative add-ons
+        gameState.addOns.flag = false
+
+        // Keep: skins, companions, achievements, prestige
+
+        // Increase prestige
+        gameState.prestige.level += 1
+        gameState.prestige.zenPoints += zenPoints
+        gameState.prestige.totalPrestiges += 1
+
+        print("[GameVM] ✨ Prestiged to level \(gameState.prestige.level) (+\(zenPoints) Zen Points)")
+        return zenPoints
+    }
+
     // MARK: - Achievement System
 
     private func checkAchievements() {

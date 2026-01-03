@@ -335,7 +335,7 @@ struct GameStateDTO: Codable {
 
 // MARK: - DTO Conversion Extensions
 extension GameState {
-    func toDTO(userId: UUID) -> GameStateDTO {
+    nonisolated func toDTO(userId: UUID) -> GameStateDTO {
         GameStateDTO(
             id: nil,
             userId: userId,
@@ -367,7 +367,7 @@ extension GameState {
         )
     }
 
-    static func fromDTO(_ dto: GameStateDTO) -> GameState {
+    nonisolated static func fromDTO(_ dto: GameStateDTO) -> GameState {
         var achievements: [String: AchievementState] = [:]
         for id in dto.unlockedAchievements {
             achievements[id] = AchievementState(unlocked: true, unlockedAt: nil, progress: 0)

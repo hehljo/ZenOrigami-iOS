@@ -239,16 +239,18 @@ class OfflineGameViewModel {
 
     private func startPlayTimeTracking() {
         playTimeTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            self?.gameState.playTime += 1
+            guard let self else { return }
+            Task { @MainActor in
+                self.gameState.playTime += 1
+            }
         }
     }
 
     // MARK: - Cleanup
 
     deinit {
-        Task { @MainActor in
-            saveTimer?.invalidate()
-            playTimeTimer?.invalidate()
-        }
+        // Note: Timers will be invalidated automatically when deallocated
+        // Accessing @MainActor properties from deinit is not safe in Swift 6
+        // If cleanup is needed, call stop methods before releasing the view model
     }
 }
