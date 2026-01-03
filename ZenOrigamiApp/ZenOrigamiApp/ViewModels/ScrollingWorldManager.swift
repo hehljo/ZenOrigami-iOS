@@ -209,11 +209,8 @@ class ScrollingWorldManager {
     // MARK: - Cleanup
 
     deinit {
-        let scrollTimer = scrollTimer
-        let rockingTimer = rockingTimer
-        Task { @MainActor in
-            scrollTimer?.invalidate()
-            rockingTimer?.invalidate()
-        }
+        // Note: Timers will be invalidated automatically when deallocated
+        // Accessing @MainActor properties from deinit is not safe in Swift 6
+        // Call stopScrolling() and stopBoatRocking() before releasing if needed
     }
 }

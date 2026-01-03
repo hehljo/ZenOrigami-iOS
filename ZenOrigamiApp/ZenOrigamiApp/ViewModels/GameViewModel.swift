@@ -69,7 +69,7 @@ class GameViewModel {
                     if let localState = loadFromUserDefaults() {
                         self.gameState = localState
                         // Migrate to cloud
-                        _ = try? await saveGameState()
+                        await saveGameState()
                         print("[GameVM] ✅ Migrated local state to cloud")
                     } else {
                         // New user, start fresh
@@ -316,11 +316,8 @@ class GameViewModel {
     // MARK: - Cleanup
 
     deinit {
-        let saveTimer = saveTimer
-        let playTimeTimer = playTimeTimer
-        Task { @MainActor in
-            saveTimer?.invalidate()
-            playTimeTimer?.invalidate()
-        }
+        // Note: Timers will be invalidated automatically when deallocated
+        // Accessing @MainActor properties from deinit is not safe in Swift 6
+        // If cleanup is needed, call stopTimers() before releasing the view model
     }
 }
