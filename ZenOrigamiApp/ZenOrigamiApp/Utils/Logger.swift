@@ -73,7 +73,10 @@ class PerformanceMonitor {
 
         // Memory monitoring timer
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            self?.updateMemoryUsage()
+            guard let self else { return }
+            Task { @MainActor in
+                self.updateMemoryUsage()
+            }
         }
 
         AppLogger.performance.info("Started performance monitoring", emoji: "📊")
@@ -100,7 +103,7 @@ class PerformanceMonitor {
             lastFrameTime = displayLink.timestamp
 
             if fps < 55.0 {
-                AppLogger.performance.warning("Low FPS detected: \(fps, privacy: .public)", emoji: "🐌")
+                AppLogger.performance.warning("Low FPS detected: \(String(format: "%.1f", fps))", emoji: "🐌")
             }
         }
     }
@@ -120,7 +123,7 @@ class PerformanceMonitor {
 
             if memoryUsageMB > 100.0 {
                 AppLogger.performance.warning(
-                    "High memory usage: \(memoryUsageMB, privacy: .public) MB",
+                    "High memory usage: \(String(format: "%.1f", memoryUsageMB)) MB",
                     emoji: "💾"
                 )
             }
