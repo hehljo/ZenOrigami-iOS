@@ -290,7 +290,10 @@ class GameViewModel {
 
     private func startPlayTimeTracking() {
         playTimeTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            self?.gameState.playTime += 1
+            guard let self = self else { return }
+            Task { @MainActor in
+                self.gameState.playTime += 1
+            }
         }
     }
 
@@ -312,7 +315,9 @@ class GameViewModel {
 
     // MARK: - Cleanup
 
-    deinit {
+    nonisolated deinit {
+        let saveTimer = self.saveTimer
+        let playTimeTimer = self.playTimeTimer
         Task { @MainActor in
             saveTimer?.invalidate()
             playTimeTimer?.invalidate()

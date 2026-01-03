@@ -55,7 +55,7 @@ class AuthService {
                 throw NSError(domain: "AuthService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid redirect URL"])
             }
 
-            let session = try await supabase.auth.signInWithOAuth(
+            _ = try await supabase.auth.signInWithOAuth(
                 provider: provider,
                 redirectTo: redirectURL
             )

@@ -1,5 +1,6 @@
 import Foundation
 import OSLog
+import QuartzCore
 
 /// Centralized logging system using OSLog
 enum AppLogger {

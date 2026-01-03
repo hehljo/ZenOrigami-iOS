@@ -117,8 +117,9 @@ class ScrollingWorldManager {
 
         scrollTimer?.invalidate()
         scrollTimer = Timer.scheduledTimer(withTimeInterval: 1/60.0, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
             Task { @MainActor in
-                self?.updateScrolling()
+                self.updateScrolling()
             }
         }
 
@@ -153,8 +154,9 @@ class ScrollingWorldManager {
     func startBoatRocking() {
         rockingTimer?.invalidate()
         rockingTimer = Timer.scheduledTimer(withTimeInterval: 1/60.0, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
             Task { @MainActor in
-                self?.updateBoatRocking()
+                self.updateBoatRocking()
             }
         }
         print("[ScrollingWorld] 🚤 Started boat rocking")
@@ -206,8 +208,12 @@ class ScrollingWorldManager {
 
     // MARK: - Cleanup
 
-    deinit {
-        scrollTimer?.invalidate()
-        rockingTimer?.invalidate()
+    nonisolated deinit {
+        let scrollTimer = self.scrollTimer
+        let rockingTimer = self.rockingTimer
+        Task { @MainActor in
+            scrollTimer?.invalidate()
+            rockingTimer?.invalidate()
+        }
     }
 }

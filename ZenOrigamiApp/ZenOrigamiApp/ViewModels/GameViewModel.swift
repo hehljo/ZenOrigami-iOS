@@ -69,7 +69,7 @@ class GameViewModel {
                     if let localState = loadFromUserDefaults() {
                         self.gameState = localState
                         // Migrate to cloud
-                        try? await saveGameState()
+                        _ = try? await saveGameState()
                         print("[GameVM] ✅ Migrated local state to cloud")
                     } else {
                         // New user, start fresh
@@ -290,7 +290,10 @@ class GameViewModel {
 
     private func startPlayTimeTracking() {
         playTimeTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            self?.gameState.playTime += 1
+            guard let self else { return }
+            Task { @MainActor in
+                self.gameState.playTime += 1
+            }
         }
     }
 
@@ -313,6 +316,8 @@ class GameViewModel {
     // MARK: - Cleanup
 
     deinit {
+        let saveTimer = saveTimer
+        let playTimeTimer = playTimeTimer
         Task { @MainActor in
             saveTimer?.invalidate()
             playTimeTimer?.invalidate()
