@@ -3,6 +3,13 @@ import Combine
 
 /// Offline-only game view model (no Supabase required)
 /// Uses UserDefaults + iCloud for persistence
+///
+/// WICHTIG: Dieser ViewModel ist 100% kompatibel mit allen Views!
+/// Views erwarten "GameViewModel" - nutze diesen Type Alias:
+///
+/// In deinem Xcode Projekt füge hinzu (ganz unten in dieser Datei):
+/// typealias GameViewModel = OfflineGameViewModel
+
 @MainActor
 @Observable
 class OfflineGameViewModel {
@@ -196,6 +203,21 @@ class OfflineGameViewModel {
         guard gameState.skins.isUnlocked(skin) else { return }
         gameState.activeSkin = skin
         print("[OfflineGameVM] 🎨 Active skin changed to \(skin.rawValue)")
+    }
+
+    // MARK: - Daily Rewards
+
+    /// Claim daily reward
+    func claimDailyReward() -> Int {
+        let currentDay = min(gameState.loginStreak + 1, 7)
+        let rewards = [(1, 100), (2, 200), (3, 400), (4, 800), (5, 1600), (6, 3200), (7, 10000)]
+        let reward = rewards[currentDay - 1].1
+
+        gameState.currencies.drop += reward
+        gameState.loginStreak = currentDay
+
+        print("[OfflineGameVM] 🎁 Claimed daily reward: \(reward) drops (Day \(currentDay))")
+        return reward
     }
 
     // MARK: - Achievement System

@@ -1,0 +1,248 @@
+import SwiftUI
+
+/// Prestige/Reset view for late-game progression
+struct PrestigeView: View {
+    @Bindable var viewModel: GameViewModel
+    @Environment(\.dismiss) private var dismiss
+    @State private var showConfirmation = false
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 24) {
+                    // Header
+                    VStack(spacing: 12) {
+                        Text("⭐")
+                            .font(.system(size: 80))
+                        Text("Prestige")
+                            .font(.largeTitle.bold())
+                        Text("Reset progress for permanent bonuses")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+
+                    // Current Prestige
+                    VStack(spacing: 8) {
+                        Text("Current Prestige Level")
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+                        Text("\(viewModel.gameState.prestige.level)")
+                            .font(.system(size: 60, weight: .bold, design: .rounded))
+                        Text("+\(viewModel.gameState.prestige.level * 10)% idle earnings")
+                            .font(.caption)
+                            .foregroundStyle(.green)
+                    }
+                    .padding()
+                    .background(Color.purple.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+
+                    // Zen Points Available
+                    let zenPoints = calculateZenPoints()
+                    VStack(spacing: 8) {
+                        Text("Zen Points Available")
+                            .font(.headline)
+                        Text("\(zenPoints)")
+                            .font(.system(size: 48, weight: .bold, design: .rounded))
+                            .foregroundStyle(.purple)
+                        Text("Based on \(viewModel.gameState.totalCollected.drop) total drops")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding()
+                    .background(Color.blue.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+
+                    // Requirements
+                    VStack(alignment: .leading, spacing: 12) {
+                        SectionHeader(title: "Prestige Requirements")
+
+                        RequirementRow(
+                            label: "Total Drops Collected",
+                            current: viewModel.gameState.totalCollected.drop,
+                            required: 50000,
+                            emoji: "💧"
+                        )
+                    }
+
+                    // Benefits
+                    VStack(alignment: .leading, spacing: 12) {
+                        SectionHeader(title: "Prestige Benefits")
+
+                        BenefitRow(emoji: "📈", text: "+10% idle earnings per level")
+                        BenefitRow(emoji: "🌟", text: "Earn Zen Points for special upgrades")
+                        BenefitRow(emoji: "🏆", text: "Unlock prestige achievements")
+                        BenefitRow(emoji: "♾️", text: "Infinite progression")
+                    }
+
+                    // What You Keep
+                    VStack(alignment: .leading, spacing: 12) {
+                        SectionHeader(title: "You Keep")
+
+                        BenefitRow(emoji: "🦢", text: "All skins and cosmetics")
+                        BenefitRow(emoji: "🐟", text: "All companions")
+                        BenefitRow(emoji: "🏆", text: "All achievements")
+                        BenefitRow(emoji: "📊", text: "Total statistics")
+                    }
+
+                    // What Resets
+                    VStack(alignment: .leading, spacing: 12) {
+                        SectionHeader(title: "Resets")
+
+                        WarningRow(emoji: "💧", text: "All currencies (Drops, Pearls, Leaves)")
+                        WarningRow(emoji: "⬆️", text: "All upgrade levels")
+                        WarningRow(emoji: "🚩", text: "Decorative add-ons (Flag)")
+                    }
+
+                    // Prestige Button
+                    if canPrestige() {
+                        Button {
+                            showConfirmation = true
+                        } label: {
+                            Text("Prestige Now")
+                                .font(.headline)
+                                .foregroundStyle(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.purple)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                        }
+                    } else {
+                        VStack {
+                            Text("Not Ready Yet")
+                                .font(.headline)
+                                .foregroundStyle(.secondary)
+                            Text("Collect \(50000 - viewModel.gameState.totalCollected.drop) more drops")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.gray.opacity(0.1))
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                    }
+                }
+                .padding()
+            }
+            .navigationTitle("Prestige")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") { dismiss() }
+                }
+            }
+        }
+        .confirmationDialog("Prestige", isPresented: $showConfirmation) {
+            Button("Prestige (\(calculateZenPoints()) Zen Points)", role: .destructive) {
+                performPrestige()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Are you sure? This will reset most progress but grant permanent bonuses!")
+        }
+    }
+
+    private func canPrestige() -> Bool {
+        viewModel.gameState.totalCollected.drop >= 50000
+    }
+
+    private func calculateZenPoints() -> Int {
+        let totalDrops = viewModel.gameState.totalCollected.drop
+        return Int(sqrt(Double(totalDrops) / 10000))
+    }
+
+    private func performPrestige() {
+        let zenPoints = calculateZenPoints()
+
+        // Reset currencies
+        viewModel.gameState.currencies = .zero
+
+        // Reset upgrades
+        viewModel.gameState.upgrades = .initial
+
+        // Reset decorative add-ons
+        viewModel.gameState.addOns.flag = false
+
+        // Keep: skins, companions, achievements, prestige
+
+        // Increase prestige
+        viewModel.gameState.prestige.level += 1
+        viewModel.gameState.prestige.zenPoints += zenPoints
+        viewModel.gameState.prestige.totalPrestiges += 1
+
+        // Play feedback
+        SoundManager.shared.playPrestige()
+        HapticFeedback.heavy()
+
+        print("[Prestige] ✨ Prestiged to level \(viewModel.gameState.prestige.level) (+\(zenPoints) Zen Points)")
+
+        dismiss()
+    }
+}
+
+struct RequirementRow: View {
+    let label: String
+    let current: Int
+    let required: Int
+    let emoji: String
+
+    var isMet: Bool { current >= required }
+
+    var body: some View {
+        HStack {
+            Text(emoji)
+            Text(label)
+                .font(.body)
+            Spacer()
+            Text("\(current) / \(required)")
+                .font(.caption.bold())
+                .foregroundStyle(isMet ? .green : .red)
+        }
+        .padding()
+        .background(isMet ? Color.green.opacity(0.1) : Color.red.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+struct BenefitRow: View {
+    let emoji: String
+    let text: String
+
+    var body: some View {
+        HStack {
+            Text(emoji)
+                .font(.title3)
+            Text(text)
+                .font(.body)
+            Spacer()
+        }
+        .padding()
+        .background(Color.green.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+struct WarningRow: View {
+    let emoji: String
+    let text: String
+
+    var body: some View {
+        HStack {
+            Text(emoji)
+                .font(.title3)
+            Text(text)
+                .font(.body)
+            Spacer()
+        }
+        .padding()
+        .background(Color.red.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+#Preview {
+    PrestigeView(viewModel: GameViewModel(
+        databaseService: DatabaseService(supabaseURL: "https://example.supabase.co", supabaseKey: "key"),
+        authService: AuthService(supabaseURL: "https://example.supabase.co", supabaseKey: "key")
+    ))
+}
