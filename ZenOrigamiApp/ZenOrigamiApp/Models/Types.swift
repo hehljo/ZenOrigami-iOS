@@ -7,7 +7,7 @@ enum Currency: String, Codable, CaseIterable {
     case leaf
 }
 
-struct Currencies: Codable, Equatable {
+struct Currencies: Codable, Equatable, Sendable {
     var drop: Int
     var pearl: Int
     var leaf: Int
@@ -48,7 +48,7 @@ enum UpgradeID: String, Codable, CaseIterable {
     case collector
 }
 
-struct UpgradesState: Codable, Equatable {
+struct UpgradesState: Codable, Equatable, Sendable {
     var speed: Int
     var radius: Int
     var rate: Int
@@ -79,7 +79,7 @@ struct UpgradesState: Codable, Equatable {
 }
 
 // MARK: - Add-ons & Skins
-struct AddOnsState: Codable, Equatable {
+struct AddOnsState: Codable, Equatable, Sendable {
     var flag: Bool
 
     static var initial: AddOnsState {
@@ -87,12 +87,12 @@ struct AddOnsState: Codable, Equatable {
     }
 }
 
-enum Skin: String, Codable, CaseIterable {
+enum Skin: String, Codable, CaseIterable, Sendable {
     case `default`
     case swanSkin = "swan_skin"
 }
 
-struct SkinsState: Codable, Equatable {
+struct SkinsState: Codable, Equatable, Sendable {
     var swanSkin: Bool
 
     static var initial: SkinsState {
@@ -118,7 +118,7 @@ enum CompanionID: String, Codable, CaseIterable {
     case origamiBird = "origami_bird"
 }
 
-struct CompanionsState: Codable, Equatable {
+struct CompanionsState: Codable, Equatable, Sendable {
     var origamiFish: Bool
     var origamiBird: Bool
 
@@ -183,7 +183,7 @@ struct Achievement: Codable, Identifiable {
     let points: Int
 }
 
-struct AchievementState: Codable, Equatable {
+struct AchievementState: Codable, Equatable, Sendable {
     var unlocked: Bool
     var unlockedAt: Date?
     var progress: Int
@@ -194,7 +194,7 @@ struct AchievementState: Codable, Equatable {
 }
 
 // MARK: - Prestige System
-struct PrestigeState: Codable, Equatable {
+struct PrestigeState: Codable, Equatable, Sendable {
     var level: Int
     var zenPoints: Int
     var totalPrestiges: Int
@@ -205,7 +205,7 @@ struct PrestigeState: Codable, Equatable {
 }
 
 // MARK: - Game State
-struct GameState: Codable, Equatable {
+struct GameState: Codable, Equatable, Sendable {
     // Currencies
     var currencies: Currencies
 
