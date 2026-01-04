@@ -126,7 +126,7 @@ actor DatabaseService {
 
 // MARK: - Supporting Types
 
-struct UserProfile: Codable {
+struct UserProfile: Codable, Sendable {
     let id: UUID
     let username: String?
     let avatarUrl: String?

@@ -16,7 +16,7 @@ struct Currencies: Codable, Equatable {
         Currencies(drop: 0, pearl: 0, leaf: 0)
     }
 
-    init(drop: Int = 0, pearl: Int = 0, leaf: Int = 0) {
+    nonisolated init(drop: Int = 0, pearl: Int = 0, leaf: Int = 0) {
         self.drop = drop
         self.pearl = pearl
         self.leaf = leaf
@@ -260,7 +260,7 @@ struct GameState: Codable, Equatable {
 }
 
 // MARK: - Database Types (Supabase)
-struct GameStateDTO: Codable {
+struct GameStateDTO: Codable, Sendable {
     let id: UUID?
     let userId: UUID
 

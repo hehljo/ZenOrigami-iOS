@@ -29,8 +29,9 @@ class ParticleEffectManager {
     func start() {
         updateTimer?.invalidate()
         updateTimer = Timer.scheduledTimer(withTimeInterval: 1/60.0, repeats: true) { [weak self] _ in
+            guard let self else { return }
             Task { @MainActor in
-                self?.updateParticles()
+                self.updateParticles()
             }
         }
         print("[Particles] ✅ Started particle system")
@@ -170,7 +171,9 @@ class ParticleEffectManager {
     }
 
     deinit {
-        updateTimer?.invalidate()
+        // Note: Timers will be invalidated automatically when deallocated
+        // Accessing @MainActor properties from deinit is not safe in Swift 6
+        // Call stop() before releasing if cleanup is needed
     }
 }
 

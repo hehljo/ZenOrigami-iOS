@@ -89,7 +89,6 @@ struct DailyRewardView: View {
         // Check if last claim was yesterday or earlier
         let calendar = Calendar.current
         let lastVisit = viewModel.gameState.lastVisit
-        let now = Date()
 
         if calendar.isDateInToday(lastVisit) {
             return false // Already claimed today

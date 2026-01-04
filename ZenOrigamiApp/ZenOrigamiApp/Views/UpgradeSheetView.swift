@@ -219,7 +219,7 @@ struct UpgradeCard: View {
                         .font(.caption.bold())
                     }
                 }
-                .foregroundStyle(canAfford ? .primary : .red)
+                .foregroundStyle(canAfford ? .primary : Color.red)
             }
             .padding()
             .background(canAfford ? Color.green.opacity(0.1) : Color.gray.opacity(0.1))
@@ -286,7 +286,7 @@ struct OneTimeItemCard: View {
                             .font(.caption.bold())
                         }
                     }
-                    .foregroundStyle(canAfford ? .primary : .red)
+                    .foregroundStyle(canAfford ? .primary : Color.red)
                 }
             }
             .padding()
