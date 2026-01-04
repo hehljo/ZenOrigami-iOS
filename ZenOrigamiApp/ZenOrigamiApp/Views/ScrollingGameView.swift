@@ -11,6 +11,8 @@ struct ScrollingGameView: View {
     @State private var showDailyReward = false
     @State private var showPrestige = false
     @State private var showTutorial = false
+    @State private var showAchievements = false
+    @State private var showMoreMenu = false
     @State private var autoCollectionTimer: Timer?
     @State private var screenSize: CGSize = .zero
 
@@ -100,76 +102,112 @@ struct ScrollingGameView: View {
                         )
                 }
 
-                // Top HUD (same as before)
-                VStack {
-                    HStack {
-                        CurrencyDisplayView(currencies: viewModel.gameState.currencies)
+                // UI Overlay
+                VStack(spacing: 0) {
+                    // MARK: - Header (Top HUD)
+                    VStack(spacing: 8) {
+                        HStack {
+                            // Currency Display
+                            CurrencyDisplayView(currencies: viewModel.gameState.currencies)
 
-                        Spacer()
+                            Spacer()
 
-                        HStack(spacing: 12) {
-                            MenuButton(icon: "gift.fill") {
-                                HapticFeedback.selection()
-                                showDailyReward = true
-                            }
-
-                            MenuButton(icon: "star.fill") {
-                                HapticFeedback.selection()
-                                showPrestige = true
-                            }
-
-                            MenuButton(icon: "chart.bar.fill") {
-                                HapticFeedback.selection()
-                                showStatistics = true
-                            }
-
+                            // Settings only (iOS Best Practice)
                             MenuButton(icon: "gearshape.fill") {
                                 HapticFeedback.selection()
                                 showSettings = true
                             }
                         }
+                        .padding(.horizontal)
+                        .padding(.top, 8)
+
+                        // Idle Status Indicator (if Rain Collector active)
+                        if viewModel.gameState.upgrades.collector > 0 {
+                            IdleStatusIndicator(
+                                isIdle: scrollingWorld.scrollSpeed < 10,
+                                collectorLevel: viewModel.gameState.upgrades.collector
+                            )
+                            .padding(.horizontal)
+                        }
                     }
-                    .padding()
 
                     Spacer()
 
-                    // Speed indicator
-                    HStack {
-                        Text("🏎️")
-                        Text(String(format: "%.0f px/s", scrollingWorld.scrollSpeed))
-                            .font(.caption)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(.ultraThinMaterial)
-                            .clipShape(Capsule())
-                    }
-                    .padding()
-
-                    Spacer()
-
-                    // Bottom UI
-                    VStack {
-                        Spacer()
-
+                    // MARK: - Footer (Bottom Bar) - iOS Best Practice 2026
+                    HStack(spacing: 12) {
+                        // Large Upgrades Button (Primary Action)
                         Button {
                             HapticFeedback.selection()
                             showUpgrades = true
                         } label: {
-                            HStack {
+                            HStack(spacing: 8) {
                                 Image(systemName: "arrow.up.circle.fill")
+                                    .font(.title3)
                                 Text("Upgrades")
                                     .font(.headline)
                             }
                             .foregroundStyle(.white)
-                            .padding(.horizontal, 24)
+                            .padding(.horizontal, 20)
                             .padding(.vertical, 12)
                             .background(Color.blue)
                             .clipShape(Capsule())
                             .shadow(radius: 4)
                         }
-                        .padding(.bottom, 32)
+
+                        // Icon Buttons (Secondary Actions)
+                        BottomBarButton(
+                            icon: "star.fill",
+                            isHighlighted: canPrestige(),
+                            action: {
+                                HapticFeedback.selection()
+                                showPrestige = true
+                            }
+                        )
+
+                        BottomBarButton(
+                            icon: "rosette",
+                            action: {
+                                HapticFeedback.selection()
+                                showAchievements = true
+                            }
+                        )
+
+                        BottomBarButton(
+                            icon: "chart.bar.fill",
+                            action: {
+                                HapticFeedback.selection()
+                                showStatistics = true
+                            }
+                        )
+
+                        // More Menu Button
+                        Menu {
+                            Button {
+                                showDailyReward = true
+                            } label: {
+                                Label("Daily Reward", systemImage: "gift.fill")
+                            }
+
+                            Divider()
+
+                            Button {
+                                // Speed indicator toggle
+                            } label: {
+                                Label("Speed: \(String(format: "%.0f px/s", scrollingWorld.scrollSpeed))", systemImage: "speedometer")
+                            }
+                            .disabled(true)
+                        } label: {
+                            Image(systemName: "ellipsis")
+                                .font(.title3)
+                                .foregroundStyle(.primary)
+                                .frame(width: 44, height: 44)
+                                .background(.ultraThinMaterial)
+                                .clipShape(Circle())
+                                .shadow(radius: 2)
+                        }
                     }
+                    .padding(.horizontal)
+                    .padding(.bottom, 20)
                 }
             }
             .onAppear {
@@ -193,6 +231,9 @@ struct ScrollingGameView: View {
         }
         .sheet(isPresented: $showPrestige) {
             PrestigeView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $showAchievements) {
+            AchievementsView(gameState: viewModel.gameState)
         }
         .fullScreenCover(isPresented: $showTutorial) {
             TutorialView()
@@ -312,6 +353,72 @@ struct ScrollingGameView: View {
             }
         }
     }
+
+    private func canPrestige() -> Bool {
+        let totalDrops = viewModel.gameState.totalCollected.drop
+        return totalDrops >= 10000 // Minimum drops for prestige
+    }
+}
+
+// MARK: - Bottom Bar Button Component
+
+struct BottomBarButton: View {
+    let icon: String
+    var isHighlighted: Bool = false
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: icon)
+                .font(.title3)
+                .foregroundStyle(isHighlighted ? Color.amber : .primary)
+                .frame(width: 44, height: 44)
+                .background(isHighlighted ? Color.amber.opacity(0.2) : .ultraThinMaterial)
+                .clipShape(Circle())
+                .shadow(radius: 2)
+                .overlay {
+                    if isHighlighted {
+                        Circle()
+                            .stroke(Color.amber, lineWidth: 2)
+                    }
+                }
+        }
+        .animation(.easeInOut(duration: 0.3), value: isHighlighted)
+    }
+}
+
+// MARK: - Idle Status Indicator Component
+
+struct IdleStatusIndicator: View {
+    let isIdle: Bool
+    let collectorLevel: Int
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Circle()
+                .fill(isIdle ? Color.green : Color.orange)
+                .frame(width: 8, height: 8)
+                .shadow(color: isIdle ? .green : .orange, radius: 4)
+
+            Text(isIdle ? "Idle Collecting" : "Active")
+                .font(.caption)
+                .foregroundStyle(.white)
+
+            Text("Lv.\(collectorLevel)")
+                .font(.caption)
+                .foregroundStyle(.white.opacity(0.7))
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(.ultraThinMaterial)
+        .clipShape(Capsule())
+    }
+}
+
+// MARK: - Color Extension
+
+extension Color {
+    static let amber = Color(red: 1.0, green: 0.75, blue: 0.0)
 }
 
 // MARK: - Parallax Background View
