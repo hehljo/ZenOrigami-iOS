@@ -55,20 +55,10 @@ actor DatabaseService {
         let dto = gameState.toDTO(userId: userId)
 
         do {
-            // Encode DTO to JSON first (Swift 6 workaround)
-            let jsonData = try await Task.detached { @Sendable in
-                let encoder = JSONEncoder()
-                encoder.dateEncodingStrategy = .iso8601
-                return try encoder.encode(dto)
-            }.value
-
-            // Convert to dictionary for Supabase
-            let jsonObject = try JSONSerialization.jsonObject(with: jsonData)
-
-            // Upsert (insert or update)
+            // Upsert (insert or update) - @unchecked Sendable bypasses MainActor inference
             try await supabase
                 .from("game_state")
-                .upsert(jsonObject)
+                .upsert(dto)
                 .execute()
 
             print("[DB] ✅ Saved game state to database")
@@ -148,7 +138,7 @@ actor DatabaseService {
 
 // MARK: - Supporting Types
 
-struct UserProfile: Codable, Sendable {
+struct UserProfile: Codable, @unchecked Sendable {
     let id: UUID
     let username: String?
     let avatarUrl: String?
