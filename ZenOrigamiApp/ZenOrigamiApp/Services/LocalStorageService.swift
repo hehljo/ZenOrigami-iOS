@@ -1,11 +1,11 @@
 @preconcurrency import Foundation
 
 // MARK: - Nonisolated Codable Helpers (Local)
-private nonisolated func decodeGameState(from data: Data) throws -> GameState {
+private nonisolated(unsafe) func decodeGameState(from data: Data) throws -> GameState {
     try JSONDecoder().decode(GameState.self, from: data)
 }
 
-private nonisolated func encodeGameState(_ state: GameState) throws -> Data {
+private nonisolated(unsafe) func encodeGameState(_ state: GameState) throws -> Data {
     let encoder = JSONEncoder()
     encoder.dateEncodingStrategy = .iso8601
     return try encoder.encode(state)

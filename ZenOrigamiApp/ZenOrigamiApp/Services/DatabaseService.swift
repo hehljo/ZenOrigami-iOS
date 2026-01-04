@@ -2,11 +2,11 @@
 import Supabase
 
 // MARK: - Nonisolated Codable Helpers
-nonisolated func decodeJSON<T: Decodable>(_ type: T.Type, from data: Data) throws -> T {
+nonisolated(unsafe) func decodeJSON<T: Decodable>(_ type: T.Type, from data: Data) throws -> T {
     try JSONDecoder().decode(type, from: data)
 }
 
-nonisolated func encodeJSON<T: Encodable>(_ value: T) throws -> Data {
+nonisolated(unsafe) func encodeJSON<T: Encodable>(_ value: T) throws -> Data {
     try JSONEncoder().encode(value)
 }
 
