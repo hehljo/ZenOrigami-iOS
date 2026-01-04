@@ -205,7 +205,7 @@ struct PrestigeState: Codable, Equatable, Sendable {
 }
 
 // MARK: - Game State
-struct GameState: Codable, Equatable, @unchecked Sendable {
+struct GameState: @preconcurrency Codable, Equatable, @unchecked Sendable {
     // Currencies
     var currencies: Currencies
 
@@ -260,7 +260,7 @@ struct GameState: Codable, Equatable, @unchecked Sendable {
 }
 
 // MARK: - Database Types (Supabase)
-struct GameStateDTO: Codable, @unchecked Sendable {
+struct GameStateDTO: @preconcurrency Codable, @unchecked Sendable {
     let id: UUID?
     let userId: UUID
 

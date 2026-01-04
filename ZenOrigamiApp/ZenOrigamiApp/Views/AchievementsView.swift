@@ -16,7 +16,7 @@ struct AchievementsView: View {
                         .padding(.top)
 
                     // Achievement Progress
-                    let unlockedCount = gameState.achievementsState.values.filter { $0 }.count
+                    let unlockedCount = gameState.achievements.values.filter { $0.unlocked }.count
                     let totalCount = GameConfig.Achievement.allCases.count
 
                     ProgressView(value: Double(unlockedCount), total: Double(totalCount))
@@ -34,8 +34,7 @@ struct AchievementsView: View {
                         ForEach(GameConfig.Achievement.allCases, id: \.self) { achievement in
                             AchievementCard(
                                 achievement: achievement,
-                                isUnlocked: gameState.achievementsState[achievement.rawValue] ?? false,
-                                gameState: gameState
+                                achievementState: gameState.achievements[achievement.rawValue] ?? .initial
                             )
                         }
                     }
@@ -59,21 +58,20 @@ struct AchievementsView: View {
 
 struct AchievementCard: View {
     let achievement: GameConfig.Achievement
-    let isUnlocked: Bool
-    let gameState: GameState
+    let achievementState: AchievementState
 
     var body: some View {
         VStack(spacing: 8) {
             // Icon
             Text(achievement.emoji)
                 .font(.system(size: 40))
-                .opacity(isUnlocked ? 1.0 : 0.3)
+                .opacity(achievementState.unlocked ? 1.0 : 0.3)
 
             // Title
             Text(achievement.title)
                 .font(.headline)
                 .multilineTextAlignment(.center)
-                .foregroundStyle(isUnlocked ? .primary : .secondary)
+                .foregroundStyle(achievementState.unlocked ? .primary : .secondary)
 
             // Description
             Text(achievement.description)
@@ -82,16 +80,8 @@ struct AchievementCard: View {
                 .foregroundStyle(.secondary)
                 .lineLimit(2)
 
-            // Progress
-            if !isUnlocked {
-                let progress = achievement.getProgress(gameState)
-                ProgressView(value: progress.current, total: progress.total)
-                    .padding(.horizontal, 8)
-
-                Text("\(Int(progress.current)) / \(Int(progress.total))")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-            } else {
+            // Progress or Reward
+            if achievementState.unlocked {
                 // Reward
                 HStack(spacing: 4) {
                     Image(systemName: "star.fill")
@@ -101,14 +91,24 @@ struct AchievementCard: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+            } else {
+                // Progress (if tracked)
+                if achievementState.progress > 0 {
+                    ProgressView(value: Double(achievementState.progress), total: 100)
+                        .padding(.horizontal, 8)
+
+                    Text("\(achievementState.progress) / 100")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
         .padding()
         .frame(maxWidth: .infinity)
-        .background(isUnlocked ? Color.blue.opacity(0.1) : Color.gray.opacity(0.1))
+        .background(achievementState.unlocked ? Color.blue.opacity(0.1) : Color.gray.opacity(0.1))
         .cornerRadius(12)
         .overlay {
-            if isUnlocked {
+            if achievementState.unlocked {
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(Color.blue, lineWidth: 2)
             }
