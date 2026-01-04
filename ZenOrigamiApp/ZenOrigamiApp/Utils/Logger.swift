@@ -77,8 +77,8 @@ class PerformanceMonitor {
             frameCount = 0
             lastFrameTime = displayLink.timestamp
 
-            if fps < 55.0 {
-                AppLogger.performance.warning("🐌 Low FPS detected: \(String(format: "%.1f", fps))")
+            if self.fps < 55.0 {
+                AppLogger.performance.warning("🐌 Low FPS detected: \(String(format: "%.1f", self.fps))")
             }
         }
     }
@@ -96,8 +96,8 @@ class PerformanceMonitor {
         if result == KERN_SUCCESS {
             memoryUsageMB = Double(info.resident_size) / 1024.0 / 1024.0
 
-            if memoryUsageMB > 100.0 {
-                AppLogger.performance.warning("💾 High memory usage: \(String(format: "%.1f", memoryUsageMB)) MB")
+            if self.memoryUsageMB > 100.0 {
+                AppLogger.performance.warning("💾 High memory usage: \(String(format: "%.1f", self.memoryUsageMB)) MB")
             }
         }
     }
