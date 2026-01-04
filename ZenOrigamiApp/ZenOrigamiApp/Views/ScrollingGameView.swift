@@ -12,6 +12,7 @@ struct ScrollingGameView: View {
     @State private var showPrestige = false
     @State private var showTutorial = false
     @State private var autoCollectionTimer: Timer?
+    @State private var screenSize: CGSize = .zero
 
     var body: some View {
         GeometryReader { geometry in
@@ -171,6 +172,12 @@ struct ScrollingGameView: View {
                     }
                 }
             }
+            .onAppear {
+                screenSize = geometry.size
+            }
+            .onChange(of: geometry.size) { _, newSize in
+                screenSize = newSize
+            }
         }
         .sheet(isPresented: $showUpgrades) {
             UpgradeSheetView(viewModel: viewModel)
@@ -213,11 +220,11 @@ struct ScrollingGameView: View {
             fallingItemManager = FallingItemManager(spawnInterval: spawnInterval)
             fallingItemManager.startSpawning()
 
-            // Auto-collection timer
+            // Auto-collection timer (runs every 0.1s)
             autoCollectionTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
                 guard let self else { return }
                 Task { @MainActor in
-                    self.autoCollectItems(geometry: geometry)
+                    self.autoCollectItems()
                 }
             }
 
@@ -246,6 +253,13 @@ struct ScrollingGameView: View {
         return (itemWorldX - cameraX) - (geometry.size.width / 2)
     }
 
+    private func calculateItemScreenX(item: FallingItem, screenWidth: CGFloat) -> CGFloat {
+        // Items spawn relative to boat's world position
+        let itemWorldX = scrollingWorld.boatWorldPosition + (item.x * screenWidth) - (screenWidth * 0.3)
+        let cameraX = scrollingWorld.boatWorldPosition - (screenWidth * 0.3)
+        return (itemWorldX - cameraX) - (screenWidth / 2)
+    }
+
     private func getCollectionRadius() -> CGFloat {
         let radiusLevel = viewModel.gameState.upgrades.radius
         let baseRadius: CGFloat = 100.0
@@ -253,15 +267,17 @@ struct ScrollingGameView: View {
         return baseRadius * radiusMultiplier
     }
 
-    private func autoCollectItems(geometry: GeometryProxy) {
-        let boatX = geometry.size.width * 0.3
-        let boatY = geometry.size.height * 0.5
+    private func autoCollectItems() {
+        guard screenSize != .zero else { return }
+
+        let boatX = screenSize.width * 0.3
+        let boatY = screenSize.height * 0.5
         let radius = getCollectionRadius()
 
         // Auto-collect drops within radius
         for item in fallingItemManager.fallingDrops {
-            let itemScreenX = calculateItemScreenX(item: item, geometry: geometry)
-            let itemScreenY = item.y * geometry.size.height
+            let itemScreenX = calculateItemScreenX(item: item, screenWidth: screenSize.width)
+            let itemScreenY = item.y * screenSize.height
             let distance = hypot(itemScreenX - boatX, itemScreenY - boatY)
 
             if distance <= radius / 2 {
@@ -273,8 +289,8 @@ struct ScrollingGameView: View {
 
         // Auto-collect pearls within radius
         for item in fallingItemManager.fallingPearls {
-            let itemScreenX = calculateItemScreenX(item: item, geometry: geometry)
-            let itemScreenY = item.y * geometry.size.height
+            let itemScreenX = calculateItemScreenX(item: item, screenWidth: screenSize.width)
+            let itemScreenY = item.y * screenSize.height
             let distance = hypot(itemScreenX - boatX, itemScreenY - boatY)
 
             if distance <= radius / 2 {
@@ -286,8 +302,8 @@ struct ScrollingGameView: View {
 
         // Auto-collect leaves within radius
         for item in fallingItemManager.fallingLeaves {
-            let itemScreenX = calculateItemScreenX(item: item, geometry: geometry)
-            let itemScreenY = item.y * geometry.size.height
+            let itemScreenX = calculateItemScreenX(item: item, screenWidth: screenSize.width)
+            let itemScreenY = item.y * screenSize.height
             let distance = hypot(itemScreenX - boatX, itemScreenY - boatY)
 
             if distance <= radius / 2 {

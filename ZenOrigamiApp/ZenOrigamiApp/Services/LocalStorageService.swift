@@ -14,8 +14,9 @@ actor LocalStorageService {
     func loadGameState() async -> GameState? {
         // Try iCloud first (for cross-device sync)
         if let iCloudData = iCloudStore.data(forKey: gameStateKey) {
-            if let state = await (try? Task.detached {
-                try JSONDecoder().decode(GameState.self, from: iCloudData)
+            if let state = await (try? Task.detached { @Sendable in
+                let decoder = JSONDecoder()
+                return try decoder.decode(GameState.self, from: iCloudData)
             }.value) {
                 print("[LocalStorage] ✅ Loaded from iCloud")
                 return state
@@ -24,8 +25,9 @@ actor LocalStorageService {
 
         // Fallback to UserDefaults
         if let data = userDefaults.data(forKey: gameStateKey) {
-            if let state = await (try? Task.detached {
-                try JSONDecoder().decode(GameState.self, from: data)
+            if let state = await (try? Task.detached { @Sendable in
+                let decoder = JSONDecoder()
+                return try decoder.decode(GameState.self, from: data)
             }.value) {
                 print("[LocalStorage] ✅ Loaded from UserDefaults")
                 return state
@@ -39,7 +41,7 @@ actor LocalStorageService {
     /// Save game state to local storage (both UserDefaults and iCloud)
     /// - Parameter gameState: Current game state
     func saveGameState(_ gameState: GameState) async throws {
-        let data = try await Task.detached {
+        let data = try await Task.detached { @Sendable in
             let encoder = JSONEncoder()
             encoder.dateEncodingStrategy = .iso8601
             return try encoder.encode(gameState)

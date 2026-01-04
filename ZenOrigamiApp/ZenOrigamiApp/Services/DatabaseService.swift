@@ -30,8 +30,9 @@ actor DatabaseService {
                 .single()
                 .execute()
 
-            let dto = try await Task.detached {
-                try JSONDecoder().decode(GameStateDTO.self, from: response.data)
+            let dto = try await Task.detached { @Sendable in
+                let decoder = JSONDecoder()
+                return try decoder.decode(GameStateDTO.self, from: response.data)
             }.value
             let gameState = GameState.fromDTO(dto)
 
@@ -89,8 +90,9 @@ actor DatabaseService {
             .single()
             .execute()
 
-        return try await Task.detached {
-            try JSONDecoder().decode(UserProfile.self, from: response.data)
+        return try await Task.detached { @Sendable in
+            let decoder = JSONDecoder()
+            return try decoder.decode(UserProfile.self, from: response.data)
         }.value
     }
 
