@@ -221,10 +221,9 @@ struct ScrollingGameView: View {
             fallingItemManager.startSpawning()
 
             // Auto-collection timer (runs every 0.1s)
-            autoCollectionTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
-                guard let self else { return }
+            autoCollectionTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
                 Task { @MainActor in
-                    self.autoCollectItems()
+                    autoCollectItems()
                 }
             }
 

@@ -30,9 +30,12 @@ actor DatabaseService {
                 .single()
                 .execute()
 
+            // Extract data before Task.detached (response is non-Sendable)
+            let responseData = response.data
+
             let dto = try await Task.detached { @Sendable in
                 let decoder = JSONDecoder()
-                return try decoder.decode(GameStateDTO.self, from: response.data)
+                return try decoder.decode(GameStateDTO.self, from: responseData)
             }.value
             let gameState = GameState.fromDTO(dto)
 
@@ -52,10 +55,20 @@ actor DatabaseService {
         let dto = gameState.toDTO(userId: userId)
 
         do {
+            // Encode DTO to JSON first (Swift 6 workaround)
+            let jsonData = try await Task.detached { @Sendable in
+                let encoder = JSONEncoder()
+                encoder.dateEncodingStrategy = .iso8601
+                return try encoder.encode(dto)
+            }.value
+
+            // Convert to dictionary for Supabase
+            let jsonObject = try JSONSerialization.jsonObject(with: jsonData)
+
             // Upsert (insert or update)
             try await supabase
                 .from("game_state")
-                .upsert(dto)
+                .upsert(jsonObject)
                 .execute()
 
             print("[DB] ✅ Saved game state to database")
@@ -90,9 +103,12 @@ actor DatabaseService {
             .single()
             .execute()
 
+        // Extract data before Task.detached (response is non-Sendable)
+        let responseData = response.data
+
         return try await Task.detached { @Sendable in
             let decoder = JSONDecoder()
-            return try decoder.decode(UserProfile.self, from: response.data)
+            return try decoder.decode(UserProfile.self, from: responseData)
         }.value
     }
 
