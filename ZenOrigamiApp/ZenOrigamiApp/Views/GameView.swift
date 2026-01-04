@@ -234,10 +234,14 @@ struct BoatView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 80, height: 80)
+                .boatRocking()  // Apply gentle wave animation
                 .shadow(radius: 2)
         } else {
-            Text("🦢")
-                .font(.system(size: 60))
+            Image("boat_swan")  // Will be replaced when swan asset is ready
+                .resizable()
+                .scaledToFit()
+                .frame(width: 80, height: 80)
+                .swanGliding()  // Smoother gliding animation
                 .shadow(radius: 2)
         }
     }
