@@ -1,380 +1,348 @@
-# 🎨 Asset Generation Prompts für Zen Origami Journey
+# 🎨 ZenOrigami iOS - Asset Generation Prompts
 
-**Für Google Gemini Image Generation**
-**Stil:** Origami Zen Foldable Minimalist - Klare Linien, keine Schatten, flache Farben, transparent-freundlich
+## 📋 Wichtige Hinweise
 
----
+**Hintergrund:**
+- ❌ NICHT transparent verwenden
+- ✅ IMMER giftgrün `#00FF00` (Chroma Key Green)
+- ✅ Einfach zu entfernen in der Nachbearbeitung
 
-## 🚤 1. Hauptfigur - Paper Boat (Papierboot)
-
-### Prompt 1: Default Paper Boat
-```
-Create a simple origami paper boat in zen minimalist style.
-Viewed from a 45-degree angle from above and slightly to the side.
-Clean geometric paper folds with crisp edges.
-Color: Soft white paper with subtle cream highlights on fold lines.
-Style: Flat design, no shadows, no gradients, clean vector-like appearance.
-Background: Transparent.
-Paper texture: Minimal, just enough to show it's paper-folded.
-Size reference: Should fit in 128x128px canvas but maintain detail.
-Aesthetic: Peaceful, zen, simple origami craft.
-```
-
-### Prompt 2: Paper Boat (Side View for Animation)
-```
-Same origami paper boat as before, but pure side profile view.
-Maintain the same zen minimalist aesthetic.
-Show the characteristic triangular sail-like peaks of folded paper.
-Color: Soft white with cream fold highlights.
-No shadows, completely flat design, transparent background.
-Clean lines only, suitable for sprite animation.
-```
-
-### Prompt 3: Paper Boat (Detailed Fold Lines)
-```
-Origami paper boat with visible fold lines for authenticity.
-Isometric 3/4 view showing boat structure.
-Add subtle thin lines indicating paper creases and folds.
-Color palette: White base (#FFFFFF), cream folds (#FFF8E7), light gray crease lines (#E8E8E8).
-Minimalist geometry, no decorative elements.
-Transparent background, no drop shadow.
-Vector-style clean edges.
-```
+**Format:**
+- Auflösung: 512x512px (Standard), 1024x1024px (hochauflösend)
+- Stil: Origami-Papierkunst, minimalistisch, Zen-Atmosphäre
+- Farben: Pastellfarben, beruhigend, zen-inspiriert
 
 ---
 
-## 🦢 2. Boat Skin - Origami Swan
+## 🚤 Hauptcharakter - Boot
 
-### Prompt 4: Origami Swan Boat
+### 1. Default Boot (🚤)
+**Prompt:**
 ```
-Create an elegant origami swan in the same zen minimalist style.
-Swan should be positioned as if floating (boat replacement).
-Classic origami swan form with graceful neck curve.
-Color: Pure white paper (#FFFFFF) with soft cream highlights (#FFF8E7).
-Show minimal fold lines on wings and body.
-No eyes or facial features - pure geometric paper form.
-Transparent background, flat design, no shadows.
-Same size reference as paper boat (128x128px equivalent).
-Peaceful, serene aesthetic.
+Create an origami paper boat viewed from the side in a minimalistic zen style. The boat should be folded from white or light blue origami paper with visible paper fold lines and creases. Simple geometric shapes, clean lines, floating on calm water. The boat should face right (sailing direction). Background: solid bright green (#00FF00) for easy removal. Style: flat, minimalist, origami paper art, zen aesthetic. No shadows on background.
 ```
 
-### Prompt 5: Origami Swan (Alternative Color)
+**Animationen:**
+- Sanftes Auf-und-Ab-Schwanken (Wellengang)
+- Leichtes Links-Rechts-Neigen beim Schwanken
+- Partikeleffekt beim Einsammeln von Items
+
+**Dateiname:** `boat_default.png`
+
+---
+
+### 2. Schwan-Skin (🦢)
+**Prompt:**
 ```
-Same origami swan design, but in soft pastel color variation.
-Color: Light sky blue (#B3D9E8) with white highlights.
-Maintain all other specifications from Prompt 4.
-Zen minimalist style, clean lines, transparent background.
+Create an elegant origami swan boat viewed from the side in a minimalistic zen style. The swan should be folded from white or cream-colored origami paper with visible paper fold lines. Graceful curved neck, geometric folded wings, floating on calm water. The swan should face right (sailing direction). Background: solid bright green (#00FF00) for easy removal. Style: flat, minimalist, origami paper art, zen aesthetic. No shadows on background.
+```
+
+**Animationen:**
+- Elegantes Gleiten (sanfter als Default-Boot)
+- Hals bewegt sich leicht mit dem Rhythmus
+- Premium-Glitzereffekt beim Einsammeln
+
+**Dateiname:** `boat_swan.png`
+
+---
+
+## 💧 Sammelbare Items (Falling Items)
+
+### 3. Wassertropfen (💧)
+**Prompt:**
+```
+Create a crystal-clear water droplet in origami paper style. The droplet should be made of translucent light blue origami paper with geometric facets and visible fold lines, creating a gem-like appearance. Simple, clean, minimalistic design. Background: solid bright green (#00FF00) for easy removal. Style: flat origami paper art, zen aesthetic, transparent/translucent effect. No shadows on background.
+```
+
+**Animationen:**
+- Fallen mit Rotationseffekt
+- Platsch-Effekt beim Einsammeln
+- Kleine Wasserring-Wellen-Animation
+
+**Dateiname:** `drop.png`
+
+---
+
+### 4. Perle (🔵)
+**Prompt:**
+```
+Create a precious pearl in origami paper style. The pearl should be made of pearlescent blue origami paper with geometric facets creating a spherical shape with visible fold lines. Glossy, gem-like appearance with subtle shimmer. Background: solid bright green (#00FF00) for easy removal. Style: flat origami paper art, zen aesthetic, geometric sphere. No shadows on background.
+```
+
+**Animationen:**
+- Fallen mit Glitzereffekt
+- Heiliger Schein beim Spawnen
+- Sternchen-Burst beim Einsammeln
+
+**Dateiname:** `pearl.png`
+
+---
+
+### 5. Blatt (🍃)
+**Prompt:**
+```
+Create an autumn leaf in origami paper style. The leaf should be made of light green to yellow-green origami paper with visible fold lines forming the leaf veins and structure. Simple geometric leaf shape with pointed tip. Background: solid bright green (#00FF00) for easy removal. Style: flat origami paper art, zen aesthetic, botanical minimalism. No shadows on background.
+```
+
+**Animationen:**
+- Fallen mit Trudeln (wie echtes Blatt)
+- Sanftes Schweben kurz vor Landung
+- Blätterwirbel-Effekt beim Einsammeln
+
+**Dateiname:** `leaf.png`
+
+---
+
+## 🐾 Begleiter (Companions)
+
+### 6. Origami-Fisch (🐟)
+**Prompt:**
+```
+Create a small origami fish in minimalistic zen style. The fish should be folded from orange or coral-colored origami paper with visible fold lines. Simple geometric fish shape with triangular tail and fins. Swimming pose facing right. Background: solid bright green (#00FF00) for easy removal. Style: flat, minimalist, origami paper art, cute and friendly. No shadows on background. Size: smaller than the boat (companion scale).
+```
+
+**Animationen:**
+- Schwimmt neben dem Boot (Auf-Ab-Bewegung)
+- Gelegentliche Schnell-Schwimm-Animation
+- Begrüßungs-Sprung beim ersten Unlock
+
+**Dateiname:** `companion_fish.png`
+
+---
+
+### 7. Origami-Vogel (🐦)
+**Prompt:**
+```
+Create a small origami bird in minimalistic zen style. The bird should be folded from light blue or white origami paper with visible fold lines. Simple geometric bird shape with angular wings and pointed beak. Flying pose with wings slightly spread. Background: solid bright green (#00FF00) for easy removal. Style: flat, minimalist, origami paper art, peaceful and graceful. No shadows on background. Size: smaller than the boat (companion scale).
+```
+
+**Animationen:**
+- Schwebt über dem Boot (Flügelschlag-Animation)
+- Kreisende Flugbahn um Boot
+- Sanfte Landung auf Boot-Dach (Idle-State)
+
+**Dateiname:** `companion_bird.png`
+
+---
+
+## 🚩 Add-Ons
+
+### 8. Origami-Flagge (🚩)
+**Prompt:**
+```
+Create a small origami flag on a pole in minimalistic zen style. The flag should be made of red or orange origami paper with visible fold lines, triangular shape, attached to a simple bamboo pole. Wind-blown appearance with geometric folds. Background: solid bright green (#00FF00) for easy removal. Style: flat, minimalist, origami paper art, zen aesthetic. No shadows on background. Size: small decorative flag for boat.
+```
+
+**Animationen:**
+- Flattern im Wind (Endlos-Loop)
+- Stärkeres Flattern bei höherer Geschwindigkeit
+- Aufroll-Animation beim Unlock
+
+**Dateiname:** `addon_flag.png`
+
+---
+
+## 🌊 Parallax-Hintergrund-Elemente
+
+### 9. Ferne Berge (🏔️)
+**Prompt:**
+```
+Create distant snow-capped mountains in origami paper style. Multiple layered mountain peaks made of white and light blue origami paper with visible geometric fold lines. Simple angular shapes, minimalistic, creating depth. Background: solid bright green (#00FF00) for easy removal. Style: flat, minimalist, origami paper art, zen landscape. No shadows on background. Horizontal panorama suitable for repeating pattern.
+```
+
+**Animationen:**
+- Langsame horizontale Bewegung (Parallax-Faktor: 0.2)
+- Keine direkten Animationen (statisches Hintergrund-Element)
+
+**Dateiname:** `parallax_mountains_far.png`
+
+---
+
+### 10. Nahe Berge (⛰️)
+**Prompt:**
+```
+Create nearby hills and mountains in origami paper style. Medium-height hills made of green and brown origami paper with visible geometric fold lines. Rounded peaks, simple angular shapes. Background: solid bright green (#00FF00) for easy removal. Style: flat, minimalist, origami paper art, zen landscape. No shadows on background. Horizontal panorama suitable for repeating pattern.
+```
+
+**Animationen:**
+- Mittlere horizontale Bewegung (Parallax-Faktor: 0.4)
+- Keine direkten Animationen (statisches Hintergrund-Element)
+
+**Dateiname:** `parallax_mountains_near.png`
+
+---
+
+### 11. Wolken (☁️)
+**Prompt:**
+```
+Create fluffy clouds in origami paper style. Round puffy clouds made of white origami paper with visible geometric fold lines. Simple rounded shapes with angular facets. Background: solid bright green (#00FF00) for easy removal. Style: flat, minimalist, origami paper art, zen sky. No shadows on background. Various sizes, suitable for repeating pattern.
+```
+
+**Animationen:**
+- Langsame horizontale Bewegung (Parallax-Faktor: 0.3)
+- Sanftes Ein- und Ausblenden
+- Gelegentliches Pulsieren (Größenänderung 5%)
+
+**Dateiname:** `parallax_clouds.png`
+
+---
+
+### 12. Bäume/Ufer (🌲)
+**Prompt:**
+```
+Create evergreen trees along a shoreline in origami paper style. Tall pine trees made of dark green origami paper with visible geometric fold lines forming triangular shapes. Simple angular tree silhouettes. Background: solid bright green (#00FF00) for easy removal. Style: flat, minimalist, origami paper art, zen forest. No shadows on background. Horizontal panorama suitable for repeating pattern.
+```
+
+**Animationen:**
+- Schnellere horizontale Bewegung (Parallax-Faktor: 0.6)
+- Leichtes Schwanken im Wind
+- Vordergrund-Effekt (erscheint näher als Boot)
+
+**Dateiname:** `parallax_trees.png`
+
+---
+
+## ⭐ Achievement-Icons
+
+### 13. Prestige-Stern (⭐)
+**Prompt:**
+```
+Create a prestigious golden star in origami paper style. Five-pointed star made of shimmering gold origami paper with visible geometric fold lines. Angular facets creating a gem-like appearance. Background: solid bright green (#00FF00) for easy removal. Style: flat, minimalist, origami paper art, zen achievement icon. No shadows on background.
+```
+
+**Animationen:**
+- Rotations-Animation (langsamer Spin)
+- Pulsierendes Leuchten
+- Explosion-Effekt beim Unlock
+
+**Dateiname:** `icon_prestige_star.png`
+
+---
+
+### 14. Meister-Stern (🌟)
+**Prompt:**
+```
+Create a radiant master achievement star in origami paper style. Shining star with light rays made of bright yellow origami paper with visible geometric fold lines. Eight-pointed star with radiating triangular rays. Background: solid bright green (#00FF00) for easy removal. Style: flat, minimalist, origami paper art, zen achievement icon. No shadows on background.
+```
+
+**Animationen:**
+- Schnellere Rotation als einfacher Stern
+- Intensives Leuchten + Lichtstrahl-Pulse
+- Spektakuläre Feuerwerk-Animation beim Unlock
+
+**Dateiname:** `icon_master_star.png`
+
+---
+
+## 🎉 Partikeleffekte
+
+### 15. Sammel-Funken (✨)
+**Prompt:**
+```
+Create magical sparkle particles in origami paper style. Small geometric star-shaped sparkles made of iridescent origami paper with visible fold lines. Various sizes and colors (white, gold, light blue). Background: solid bright green (#00FF00) for easy removal. Style: flat, minimalist, origami paper art, zen magic effect. No shadows on background. Sheet with 10-15 individual sparkle variations.
+```
+
+**Animationen:**
+- Burst-Effekt beim Einsammeln
+- Aufsteigen und Verblassen
+- Rotation während Animation
+
+**Dateiname:** `particle_sparkles.png`
+
+---
+
+### 16. Wasserspritzer (💦)
+**Prompt:**
+```
+Create water splash droplets in origami paper style. Small water drop shapes made of light blue translucent origami paper with visible geometric facets. Various sizes and angles. Background: solid bright green (#00FF00) for easy removal. Style: flat, minimalist, origami paper art, zen water effect. No shadows on background. Sheet with 8-12 individual droplet variations.
+```
+
+**Animationen:**
+- Spritz-Effekt beim Wassertropfen-Einsammeln
+- Aufsteigen und Verblassen
+- Kleine Rotationsbewegung
+
+**Dateiname:** `particle_water_splash.png`
+
+---
+
+### 17. Blätterwirbel (🍂)
+**Prompt:**
+```
+Create swirling autumn leaves in origami paper style. Small leaf shapes in various autumn colors (orange, yellow, light green) made of origami paper with visible fold lines. Various orientations and sizes. Background: solid bright green (#00FF00) for easy removal. Style: flat, minimalist, origami paper art, zen nature effect. No shadows on background. Sheet with 10-15 individual leaf variations.
+```
+
+**Animationen:**
+- Wirbel-Effekt beim Blatt-Einsammeln
+- Kreisende Bewegung nach oben
+- Trudeln während Animation
+
+**Dateiname:** `particle_leaf_swirl.png`
+
+---
+
+## 📊 Zusammenfassung
+
+**Benötigte Assets:** 17 Haupt-Assets
+
+**Kategorien:**
+- 🚤 Boote: 2 (Default, Swan)
+- 💧 Items: 3 (Drop, Pearl, Leaf)
+- 🐾 Companions: 2 (Fish, Bird)
+- 🚩 Add-Ons: 1 (Flag)
+- 🌊 Parallax: 4 (Far Mountains, Near Mountains, Clouds, Trees)
+- ⭐ Icons: 2 (Prestige Star, Master Star)
+- 🎉 Partikel: 3 (Sparkles, Water Splash, Leaf Swirl)
+
+**Zusätzliche Animationen (Code-basiert):**
+- Wellengang-Effekt (Boat rocking)
+- UI-Transitions (Sheets, Toasts)
+- Button-Hover-Effekte
+- Progress-Bar-Animationen
+
+---
+
+## 🎬 Animations-Cheat-Sheet
+
+**SwiftUI Animation Pattern:**
+```swift
+// Beispiel: Rotierender Stern
+.rotationEffect(.degrees(rotation))
+.onAppear {
+    withAnimation(.linear(duration: 3).repeatForever(autoreverses: false)) {
+        rotation = 360
+    }
+}
+
+// Beispiel: Pulsierendes Leuchten
+.scaleEffect(scale)
+.onAppear {
+    withAnimation(.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
+        scale = 1.2
+    }
+}
+
+// Beispiel: Partikel-Burst
+.opacity(opacity)
+.offset(x: offsetX, y: offsetY)
+.onAppear {
+    withAnimation(.easeOut(duration: 0.8)) {
+        opacity = 0
+        offsetY = -50
+    }
+}
 ```
 
 ---
 
-## 💧 3. Sammelbare Items - Falling Objects
+## ✅ Nächste Schritte
 
-### Prompt 6: Water Drop (Drop Currency)
-```
-Stylized origami-inspired water drop shape.
-NOT realistic water, but geometric paper-folded interpretation.
-Teardrop form with angular facets suggesting paper folds.
-Color: Translucent light blue (#87CEEB) with white fold highlights.
-Clean edges, flat color zones separated by fold lines.
-Size: 64x64px equivalent, must be clearly visible.
-Transparent background, no shadow, no gradient.
-Minimal and zen aesthetic.
-```
-
-### Prompt 7: Pearl (Pearl Currency)
-```
-Origami-style pearl - geometric sphere made of paper triangles.
-Low-poly paper ball with visible faceted surface.
-Color: Soft white pearl (#F0F0F0) with very light pink shimmer zones (#FFE4E1).
-6-8 visible facets/triangular paper segments.
-Clean lines between facets, no shading gradient.
-Transparent background, 64x64px reference size.
-Zen minimalist, paper-craft aesthetic.
-```
-
-### Prompt 8: Leaf (Leaf Currency)
-```
-Simple origami leaf with single center fold.
-Almond/boat-shaped leaf form with crisp center crease.
-Color: Soft sage green (#A8C686) with lighter green on one side of fold (#D4E8C1).
-Minimal geometric shape, 5-7 simple edges maximum.
-No veins or complex detail - pure origami simplicity.
-Transparent background, flat design, 64x64px size.
-Clean lines, zen aesthetic.
-```
+1. **Assets generieren** mit Midjourney/DALL-E/Stable Diffusion
+2. **Grüner Hintergrund entfernen** (Chroma Key in Photoshop/GIMP)
+3. **Assets in Xcode importieren** → Assets.xcassets
+4. **Asset-Referenzen aktualisieren** in Code (ersetze Emojis durch Images)
+5. **Animationen implementieren** in SwiftUI Views
 
 ---
 
-## 🐟 4. Companions - Origami Tiere
-
-### Prompt 9: Origami Fish Companion
-```
-Small origami fish in classic paper-folding style.
-Triangular head, diamond body, triangular tail fin.
-Color: Soft coral orange (#FFA07A) with cream fold highlights (#FFF8E7).
-Show 3-4 key fold lines indicating paper structure.
-Simple geometric form, no scales or realistic details.
-Transparent background, 96x96px size reference.
-Friendly, peaceful appearance, zen minimalist style.
-Flat design, no shadows or gradients.
-```
-
-### Prompt 10: Origami Bird Companion
-```
-Small origami bird (crane-inspired but simplified).
-Classic paper crane silhouette with wings spread slightly.
-Color: Sky blue (#87CEEB) with white fold highlights (#FFFFFF).
-Minimal geometric design, show key wing and body folds.
-No eyes or beak detail - pure paper geometry.
-Transparent background, 96x96px size reference.
-Peaceful, zen aesthetic, flat design.
-Clean lines only, no shadows.
-```
-
----
-
-## 🏔️ 5. Background Elements
-
-### Prompt 11: Origami Mountains (Background Layer 1)
-```
-Stylized mountain range made of layered paper triangles.
-3-4 mountain peaks in overlapping layers.
-Colors: Gradient from light gray (#E0E0E0) in front to darker gray (#B0B0B0) in back.
-Each mountain is a simple triangle or trapezoid - pure geometry.
-Flat color per mountain, no texture or shading within each shape.
-Transparent background, should tile horizontally.
-Width: 1024px reference, height: 300px.
-Zen minimalist, paper-cut aesthetic.
-```
-
-### Prompt 12: Paper-Fold Clouds (Background Layer 2)
-```
-Fluffy clouds made of overlapping paper circles and ovals.
-3-4 simple geometric shapes per cloud clustered together.
-Color: Soft white (#FAFAFA) with very light cream shadows (#F5F5F0).
-Completely flat, no gradient within shapes.
-Transparent background, should work as scattered elements.
-Individual cloud size: 128x64px reference.
-Peaceful, zen aesthetic, paper-craft style.
-```
-
-### Prompt 13: Origami Water Surface (Animated Layer)
-```
-Stylized water made of horizontal wavy lines.
-3-4 parallel waves with gentle curves - not realistic water.
-Color: Soft blue (#A2D5F2) lines on transparent background.
-Clean vector-style lines, uniform thickness.
-Pattern should tile horizontally seamlessly.
-Width: 512px reference, height: 100px.
-Minimalist, zen aesthetic, suggests water without realism.
-```
-
-### Prompt 14: Paper Shore/Beach (Ground Element)
-```
-Simple shoreline made of overlapping paper shapes.
-Gentle curves suggesting beach and water meeting.
-Colors: Sandy beige (#F4E4C1) for shore, light blue (#B3D9E8) for water edge.
-Flat color zones, clean division line between sand and water.
-Should tile horizontally, height: 150px reference.
-Transparent background above shore line.
-Zen minimalist, paper-cut aesthetic.
-```
-
----
-
-## 🎯 6. UI Elements
-
-### Prompt 15: Currency Icons (Set of 3)
-```
-Create three circular currency icons matching the drop, pearl, and leaf items.
-Each icon: 48x48px reference size, circular frame.
-Background circle: Soft white (#FFFFFF) with thin border.
-Center symbol: Simplified geometric version of drop/pearl/leaf.
-Colors match the falling items (blue drop, white pearl, green leaf).
-Flat design, no shadows, transparent background outside circle.
-Zen minimalist, clean and clear for UI display.
-```
-
-### Prompt 16: Upgrade Button Background
-```
-Rectangular button shape made of layered paper appearance.
-Rounded corners (8px radius), clean geometric form.
-Color: Soft paper white (#F8F8F8) with subtle cream edge (#F0F0E8).
-Show minimal fold line at top suggesting paper depth.
-Size: 200x60px reference.
-Flat design, no drop shadow, transparent background.
-Should look pressable but minimal and zen.
-```
-
-### Prompt 17: Achievement Badge (Locked)
-```
-Circular badge made of origami paper segments.
-8-pointed star shape created from folded triangular sections.
-Color: Light gray (#C0C0C0) monochrome for locked state.
-Clean geometric segments, thin lines between folds.
-Size: 80x80px reference.
-Transparent background, flat design.
-Zen aesthetic, suggests unfolding/revealing when unlocked.
-```
-
-### Prompt 18: Achievement Badge (Unlocked)
-```
-Same 8-pointed origami star badge but in color.
-Color: Gold/yellow (#FFD700) with white highlights (#FFFACD).
-Show the paper segments more prominently - "unfolded".
-Same size and style as locked version.
-Transparent background, flat design, no glow effects.
-Clean and celebratory but still minimalist.
-```
-
----
-
-## 🎨 7. Decorative Elements
-
-### Prompt 19: Origami Flag (Add-on Item)
-```
-Small pennant flag on a simple pole.
-Triangular flag made of single folded paper.
-Color: Vibrant red (#E74C3C) flag on natural wood pole (#8B7355).
-Show one fold line down center of flag for depth.
-Size: 64x96px reference (vertical).
-Transparent background, flat design.
-Zen minimalist, cheerful accent piece.
-```
-
-### Prompt 20: Loading Spinner (Origami Windmill)
-```
-Simple 4-blade windmill made of paper triangles.
-Each blade is a right triangle pointing outward from center.
-Color: Soft blue (#87CEEB) alternating with white (#FFFFFF) blades.
-Size: 64x64px reference, designed to rotate.
-Transparent background, perfectly centered.
-Clean lines, zen aesthetic, suggests gentle spinning.
-```
-
----
-
-## 📐 Technical Specifications (All Assets)
-
-### Allgemeine Anforderungen:
-- **Dateiformat**: PNG mit Transparenz (24-bit + Alpha)
-- **Farbprofil**: sRGB
-- **Hintergrund**: Vollständig transparent
-- **Antialiasing**: Minimal (crisp edges bevorzugt)
-- **Schatten**: Keine
-- **Gradienten**: Keine (nur flache Farbzonen)
-- **Texturen**: Minimal (nur Paper-Suggestion)
-
-### Farbpalette (Master Colors):
-```
-Primary Colors:
-- Paper White: #FFFFFF
-- Cream Highlight: #FFF8E7
-- Soft Gray: #E8E8E8
-
-Accent Colors:
-- Drop Blue: #87CEEB
-- Pearl White: #F0F0F0 + #FFE4E1 (pink shimmer)
-- Leaf Green: #A8C686 + #D4E8C1
-- Coral Orange: #FFA07A (fish)
-- Sky Blue: #87CEEB (bird)
-
-Background Colors:
-- Mountain Gray: #E0E0E0 → #B0B0B0
-- Cloud White: #FAFAFA
-- Water Blue: #A2D5F2
-- Beach Beige: #F4E4C1
-```
-
-### Export Größen:
-- **Sprites (Boat, Swan)**: 128x128px @2x = 256x256px final
-- **Items (Drop, Pearl, Leaf)**: 64x64px @2x = 128x128px final
-- **Companions**: 96x96px @2x = 192x192px final
-- **UI Icons**: 48x48px @2x = 96x96px final
-- **Backgrounds**: Variable, see individual prompts
-
----
-
-## 🔄 Variations & Animations
-
-### Prompt 21: Water Drop Bounce Animation Frames (3 frames)
-```
-Create 3 frames of water drop landing animation:
-Frame 1: Round drop shape (normal)
-Frame 2: Squashed drop (impact) - wider, shorter
-Frame 3: Stretched drop (bounce) - narrower, taller
-Keep same origami-faceted style, same colors.
-Size: 64x64px each frame, transparent background.
-Geometric transformation only, maintain zen aesthetic.
-```
-
-### Prompt 22: Boat Rocking Animation Frames (2 frames)
-```
-Create 2 frames of boat gently rocking on water:
-Frame 1: Boat tilted 5° left
-Frame 2: Boat tilted 5° right
-Same origami boat design, just rotated.
-Size: 128x128px each, transparent background.
-Subtle movement for idle animation.
-```
-
----
-
-## 📝 Prompt Tips für Google Gemini
-
-### Best Practices:
-1. **Beginne immer mit**: "Create in origami zen foldable minimalist style..."
-2. **Betone**: "flat design, no shadows, no gradients, clean lines"
-3. **Spezifiziere**: "transparent background, vector-like appearance"
-4. **Farben**: Gib HEX-Codes an für Konsistenz
-5. **Referenz-Größe**: Erwähne Pixel-Dimensionen
-6. **Vermeide**: "realistic", "3D shading", "photorealistic", "detailed texture"
-
-### Wenn Ergebnis zu komplex:
-- Füge hinzu: "reduce to 5 geometric shapes maximum"
-- Oder: "simplify to basic triangles and rectangles only"
-
-### Wenn zu detailliert:
-- Füge hinzu: "remove all small details, keep only main form"
-- Oder: "flat color zones only, no internal patterns"
-
----
-
-## 🎯 Verwendung
-
-1. **Kopiere jeden Prompt einzeln** in Google Gemini Image Generator
-2. **Generiere 2-3 Varianten** pro Prompt
-3. **Wähle die minimalistischste Version**
-4. **Post-Processing**:
-   - Entferne Hintergrund (falls nötig) mit Photoshop/GIMP
-   - Erhöhe Kontrast der Kanten
-   - Exportiere als PNG mit Transparenz
-5. **Benenne Dateien** nach Schema:
-   - `boat_default.png`
-   - `swan_skin.png`
-   - `drop_item.png`
-   - `pearl_item.png`
-   - `leaf_item.png`
-   - etc.
-
----
-
-## ✅ Qualitätskontrolle
-
-Jedes Asset sollte erfüllen:
-- [ ] Transparenter Hintergrund (kein Weiß um Objekt)
-- [ ] Klare, scharfe Kanten (kein verschwommenes Antialiasing)
-- [ ] Flache Farben (keine Gradienten sichtbar)
-- [ ] Keine Schatten (auch nicht subtil)
-- [ ] Origami-Ästhetik erkennbar (Falten, geometrisch)
-- [ ] Zen/Minimalistisch (nicht überladen)
-- [ ] Richtige Größe (siehe Spezifikationen)
-- [ ] Konsistente Farbpalette (siehe Master Colors)
-
----
-
-**Erstellt für**: Zen Origami Journey iOS
-**Ziel-Engine**: SwiftUI + SpriteKit
-**Asset-Stil**: Origami Zen Foldable Minimalist
-**Total Assets**: 22 Hauptvarianten + Animationsframes
+**Hinweis:** Alle Animationen sind direkt unter dem jeweiligen Asset-Prompt dokumentiert für bessere Zuordnung.
