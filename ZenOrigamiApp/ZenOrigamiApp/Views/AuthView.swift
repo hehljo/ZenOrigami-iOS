@@ -55,7 +55,7 @@ struct AuthView: View {
 
                     // GitHub Sign In
                     OAuthButton(
-                        icon: "github",
+                        icon: "chevron.left.forwardslash.chevron.right",
                         title: "Sign in with GitHub",
                         backgroundColor: Color(red: 0.13, green: 0.13, blue: 0.13),
                         foregroundColor: .white
