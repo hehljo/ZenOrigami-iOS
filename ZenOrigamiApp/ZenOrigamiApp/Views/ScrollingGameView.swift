@@ -11,6 +11,7 @@ struct ScrollingGameView: View {
     @State private var showDailyReward = false
     @State private var showPrestige = false
     @State private var showTutorial = false
+    @State private var autoCollectionTimer: Timer?
 
     var body: some View {
         GeometryReader { geometry in
@@ -59,28 +60,33 @@ struct ScrollingGameView: View {
                         }
                 }
 
-                // Boat (fixed horizontal position, draggable vertically)
+                // Collection radius (visual feedback)
+                Circle()
+                    .fill(Color.blue.opacity(0.1))
+                    .frame(
+                        width: getCollectionRadius(),
+                        height: getCollectionRadius()
+                    )
+                    .position(
+                        x: geometry.size.width * 0.3,
+                        y: geometry.size.height * 0.5
+                    )
+
+                // Boat (fixed position, auto-scrolling)
                 BoatView(skin: viewModel.gameState.activeSkin)
                     .rotationEffect(.degrees(scrollingWorld.boatRockingAngle))
                     .position(
                         x: geometry.size.width * 0.3, // Fixed at 30% from left
-                        y: geometry.size.height * scrollingWorld.boatYPosition
-                    )
-                    .gesture(
-                        DragGesture()
-                            .onChanged { value in
-                                let newY = value.location.y / geometry.size.height
-                                scrollingWorld.setBoatYPosition(newY)
-                            }
+                        y: geometry.size.height * 0.5 // Fixed vertically centered
                     )
 
-                // Companions (follow boat)
+                // Companions (follow boat at fixed position)
                 if viewModel.gameState.companions.origamiFish {
                     Text("🐟")
                         .font(.system(size: 32))
                         .position(
                             x: (geometry.size.width * 0.3) - 40,
-                            y: (geometry.size.height * scrollingWorld.boatYPosition) + 20
+                            y: (geometry.size.height * 0.5) + 20
                         )
                 }
 
@@ -89,7 +95,7 @@ struct ScrollingGameView: View {
                         .font(.system(size: 32))
                         .position(
                             x: (geometry.size.width * 0.3) + 40,
-                            y: (geometry.size.height * scrollingWorld.boatYPosition) - 40
+                            y: (geometry.size.height * 0.5) - 40
                         )
                 }
 
@@ -199,7 +205,21 @@ struct ScrollingGameView: View {
             // Apply speed upgrades
             let speedLevel = viewModel.gameState.upgrades.speed
             let speedMultiplier = 1.0 + (Double(speedLevel) * 0.1)
-            scrollingWorld.scrollSpeed *= speedMultiplier
+            scrollingWorld.scrollSpeed = 50.0 * speedMultiplier
+
+            // Apply drop rate upgrades (spawn interval)
+            let dropRateLevel = viewModel.gameState.upgrades.rate
+            let spawnInterval = max(0.5, 2.0 - (Double(dropRateLevel) * 0.1))
+            fallingItemManager = FallingItemManager(spawnInterval: spawnInterval)
+            fallingItemManager.startSpawning()
+
+            // Auto-collection timer
+            autoCollectionTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
+                guard let self else { return }
+                Task { @MainActor in
+                    self.autoCollectItems(geometry: geometry)
+                }
+            }
 
             // Show tutorial for first-time users
             if !UserDefaults.standard.bool(forKey: "hasSeenTutorial") {
@@ -209,6 +229,8 @@ struct ScrollingGameView: View {
             }
         }
         .onDisappear {
+            autoCollectionTimer?.invalidate()
+            autoCollectionTimer = nil
             fallingItemManager.stopSpawning()
             scrollingWorld.stopScrolling()
             scrollingWorld.stopBoatRocking()
@@ -222,6 +244,58 @@ struct ScrollingGameView: View {
         let itemWorldX = scrollingWorld.boatWorldPosition + (item.x * geometry.size.width) - (geometry.size.width * 0.3)
         let cameraX = scrollingWorld.boatWorldPosition - (geometry.size.width * 0.3)
         return (itemWorldX - cameraX) - (geometry.size.width / 2)
+    }
+
+    private func getCollectionRadius() -> CGFloat {
+        let radiusLevel = viewModel.gameState.upgrades.radius
+        let baseRadius: CGFloat = 100.0
+        let radiusMultiplier = 1.0 + (CGFloat(radiusLevel) * 0.2)
+        return baseRadius * radiusMultiplier
+    }
+
+    private func autoCollectItems(geometry: GeometryProxy) {
+        let boatX = geometry.size.width * 0.3
+        let boatY = geometry.size.height * 0.5
+        let radius = getCollectionRadius()
+
+        // Auto-collect drops within radius
+        for item in fallingItemManager.fallingDrops {
+            let itemScreenX = calculateItemScreenX(item: item, geometry: geometry)
+            let itemScreenY = item.y * geometry.size.height
+            let distance = hypot(itemScreenX - boatX, itemScreenY - boatY)
+
+            if distance <= radius / 2 {
+                if fallingItemManager.collectDrop(at: item.id) {
+                    viewModel.collect(currency: .drop, amount: 1)
+                }
+            }
+        }
+
+        // Auto-collect pearls within radius
+        for item in fallingItemManager.fallingPearls {
+            let itemScreenX = calculateItemScreenX(item: item, geometry: geometry)
+            let itemScreenY = item.y * geometry.size.height
+            let distance = hypot(itemScreenX - boatX, itemScreenY - boatY)
+
+            if distance <= radius / 2 {
+                if fallingItemManager.collectPearl(at: item.id) {
+                    viewModel.collect(currency: .pearl, amount: 1)
+                }
+            }
+        }
+
+        // Auto-collect leaves within radius
+        for item in fallingItemManager.fallingLeaves {
+            let itemScreenX = calculateItemScreenX(item: item, geometry: geometry)
+            let itemScreenY = item.y * geometry.size.height
+            let distance = hypot(itemScreenX - boatX, itemScreenY - boatY)
+
+            if distance <= radius / 2 {
+                if fallingItemManager.collectLeaf(at: item.id) {
+                    viewModel.collect(currency: .leaf, amount: 1)
+                }
+            }
+        }
     }
 }
 
