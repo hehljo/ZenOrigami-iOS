@@ -229,9 +229,17 @@ struct BoatView: View {
     let skin: Skin
 
     var body: some View {
-        Text(skin == .default ? "🚤" : "🦢")
-            .font(.system(size: 60))
-            .shadow(radius: 2)
+        if skin == .default {
+            Image("boat_default")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 80, height: 80)
+                .shadow(radius: 2)
+        } else {
+            Text("🦢")
+                .font(.system(size: 60))
+                .shadow(radius: 2)
+        }
     }
 }
 

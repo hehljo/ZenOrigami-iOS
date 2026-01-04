@@ -10,9 +10,11 @@ struct WelcomeBackView: View {
         VStack(spacing: 24) {
             Spacer()
 
-            // Emoji animation
-            Text("🚤")
-                .font(.system(size: 80))
+            // Boat animation
+            Image("boat_default")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 100, height: 100)
                 .scaleEffect(1.2)
                 .animation(.spring(response: 0.6, dampingFraction: 0.6).repeatForever(autoreverses: true), value: UUID())
 
