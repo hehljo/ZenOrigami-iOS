@@ -5,12 +5,13 @@ struct ContentView: View {
     @Environment(AuthService.self) private var authService
     @State private var gameViewModel: GameViewModel?
     @AppStorage("useScrollingMode") private var useScrollingMode = true
+    @AppStorage("offlineMode") private var offlineMode = false
 
     var body: some View {
         Group {
-            if authService.isLoading {
+            if authService.isLoading && !offlineMode {
                 LoadingView()
-            } else if authService.isAuthenticated {
+            } else if authService.isAuthenticated || offlineMode {
                 if let viewModel = gameViewModel {
                     if useScrollingMode {
                         ScrollingGameView(viewModel: viewModel)
@@ -34,6 +35,13 @@ struct ContentView: View {
                 }
             } else {
                 gameViewModel = nil
+            }
+        }
+        .onChange(of: offlineMode) { _, offline in
+            if offline {
+                Task {
+                    await initializeGameViewModel()
+                }
             }
         }
     }

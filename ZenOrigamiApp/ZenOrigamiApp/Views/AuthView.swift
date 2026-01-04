@@ -6,6 +6,7 @@ import AuthenticationServices
 struct AuthView: View {
     @Environment(AuthService.self) private var authService
     @State private var isSigningIn = false
+    @AppStorage("offlineMode") private var offlineMode = false
 
     var body: some View {
         ZStack {
@@ -67,7 +68,7 @@ struct AuthView: View {
 
                 // Offline mode option
                 Button {
-                    // TODO: Implement offline mode
+                    offlineMode = true
                 } label: {
                     Text("Continue without signing in")
                         .font(.subheadline)
