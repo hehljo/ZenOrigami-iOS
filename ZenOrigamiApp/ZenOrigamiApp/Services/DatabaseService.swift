@@ -1,6 +1,15 @@
 import Foundation
 import Supabase
 
+// MARK: - Nonisolated Codable Helpers
+nonisolated func decodeJSON<T: Decodable>(_ type: T.Type, from data: Data) throws -> T {
+    try JSONDecoder().decode(type, from: data)
+}
+
+nonisolated func encodeJSON<T: Encodable>(_ value: T) throws -> Data {
+    try JSONEncoder().encode(value)
+}
+
 /// Database service for Supabase persistence
 /// Handles game state loading, saving, and synchronization
 actor DatabaseService {
@@ -30,7 +39,7 @@ actor DatabaseService {
                 .single()
                 .execute()
 
-            let dto = try JSONDecoder().decode(GameStateDTO.self, from: response.data)
+            let dto = try decodeJSON(GameStateDTO.self, from: response.data)
             let gameState = GameState.fromDTO(dto)
 
             print("[DB] ✅ Loaded game state from database")
@@ -87,7 +96,7 @@ actor DatabaseService {
             .single()
             .execute()
 
-        return try JSONDecoder().decode(UserProfile.self, from: response.data)
+        return try decodeJSON(UserProfile.self, from: response.data)
     }
 
     /// Update user profile

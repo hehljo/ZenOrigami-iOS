@@ -1,5 +1,16 @@
 import Foundation
 
+// MARK: - Nonisolated Codable Helpers (Local)
+private nonisolated func decodeGameState(from data: Data) throws -> GameState {
+    try JSONDecoder().decode(GameState.self, from: data)
+}
+
+private nonisolated func encodeGameState(_ state: GameState) throws -> Data {
+    let encoder = JSONEncoder()
+    encoder.dateEncodingStrategy = .iso8601
+    return try encoder.encode(state)
+}
+
 /// Local storage service using UserDefaults + iCloud (NSUbiquitousKeyValueStore)
 /// No Supabase required - perfect for offline-first apps
 actor LocalStorageService {
@@ -14,14 +25,14 @@ actor LocalStorageService {
     func loadGameState() async -> GameState? {
         // Try iCloud first (for cross-device sync)
         if let iCloudData = iCloudStore.data(forKey: gameStateKey),
-           let state = try? JSONDecoder().decode(GameState.self, from: iCloudData) {
+           let state = try? decodeGameState(from: iCloudData) {
             print("[LocalStorage] ✅ Loaded from iCloud")
             return state
         }
 
         // Fallback to UserDefaults
         if let data = userDefaults.data(forKey: gameStateKey),
-           let state = try? JSONDecoder().decode(GameState.self, from: data) {
+           let state = try? decodeGameState(from: data) {
             print("[LocalStorage] ✅ Loaded from UserDefaults")
             return state
         }
@@ -33,10 +44,7 @@ actor LocalStorageService {
     /// Save game state to local storage (both UserDefaults and iCloud)
     /// - Parameter gameState: Current game state
     func saveGameState(_ gameState: GameState) async throws {
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .iso8601
-
-        let data = try encoder.encode(gameState)
+        let data = try encodeGameState(gameState)
 
         // Save to UserDefaults (instant, local)
         userDefaults.set(data, forKey: gameStateKey)
