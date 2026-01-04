@@ -19,7 +19,13 @@
 ### 1. Default Boot (🚤)
 **Prompt:**
 ```
-Create an origami paper boat viewed from the side in a minimalistic zen style. The boat should be folded from white or light blue origami paper with visible paper fold lines and creases. Simple geometric shapes, clean lines. The boat should face right (sailing direction). Isolated object on pure white background. No water, no waves, no reflections, no shadows. Style: flat, minimalist, origami paper art, zen aesthetic, clean product shot.
+Create an origami paper boat in a stylized minimalist art style.
+Viewed from the side, facing right (sailing direction).
+Light blue origami paper with visible geometric fold lines and creases.
+Soft shading for depth, but simplified forms and clean flat colors with subtle gradients.
+2.5D illustration style - between flat and realistic.
+Isolated on pure white background. No water, no waves, no reflections, no cast shadows.
+Style: modern minimalist, zen aesthetic, game-ready asset, stylized origami illustration.
 ```
 
 **Animationen:**
