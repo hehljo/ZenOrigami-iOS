@@ -138,7 +138,7 @@ actor DatabaseService {
 
 // MARK: - Supporting Types
 
-struct UserProfile: @preconcurrency Codable, @unchecked Sendable {
+struct UserProfile: Codable, @unchecked Sendable {
     let id: UUID
     let username: String?
     let avatarUrl: String?

@@ -373,7 +373,13 @@ struct BottomBarButton: View {
                 .font(.title3)
                 .foregroundStyle(isHighlighted ? Color.amber : .primary)
                 .frame(width: 44, height: 44)
-                .background(isHighlighted ? Color.amber.opacity(0.2) : .ultraThinMaterial)
+                .background {
+                    if isHighlighted {
+                        Color.amber.opacity(0.2)
+                    } else {
+                        Color.gray.opacity(0.2)
+                    }
+                }
                 .clipShape(Circle())
                 .shadow(radius: 2)
                 .overlay {
