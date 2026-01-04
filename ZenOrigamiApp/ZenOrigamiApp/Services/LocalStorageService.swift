@@ -1,4 +1,4 @@
-import Foundation
+@preconcurrency import Foundation
 
 // MARK: - Nonisolated Codable Helpers (Local)
 private nonisolated func decodeGameState(from data: Data) throws -> GameState {
