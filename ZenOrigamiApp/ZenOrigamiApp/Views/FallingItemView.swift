@@ -19,11 +19,8 @@ struct FallingItemView: View {
             Group {
                 if let assetName = assetName {
                     // Use Image asset with animations
-                    Image(assetName)
-                        .resizable()
-                        .scaledToFit()
+                    itemImage(for: assetName)
                         .frame(width: item.isCollected ? 60 : 40, height: item.isCollected ? 60 : 40)
-                        .modifier(itemAnimation(for: assetName))
                 } else if let emoji = emoji {
                     // Fallback to emoji
                     Text(emoji)
@@ -47,16 +44,27 @@ struct FallingItemView: View {
 
     /// Apply appropriate animation based on item type
     @ViewBuilder
-    private func itemAnimation(for assetName: String) -> some ViewModifier {
+    private func itemImage(for assetName: String) -> some View {
         switch assetName {
         case "drop":
-            AssetAnimations.DropFalling()
+            Image(assetName)
+                .resizable()
+                .scaledToFit()
+                .dropFalling()
         case "pearl":
-            AssetAnimations.PearlFalling()
+            Image(assetName)
+                .resizable()
+                .scaledToFit()
+                .pearlFalling()
         case "leaf":
-            AssetAnimations.LeafFluttering()
+            Image(assetName)
+                .resizable()
+                .scaledToFit()
+                .leafFluttering()
         default:
-            AssetAnimations.DropFalling() // Default animation
+            Image(assetName)
+                .resizable()
+                .scaledToFit()
         }
     }
 }

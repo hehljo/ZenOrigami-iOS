@@ -55,10 +55,22 @@ actor DatabaseService {
         let dto = gameState.toDTO(userId: userId)
 
         do {
-            // Upsert (insert or update) - @unchecked Sendable bypasses MainActor inference
+            // Encode in Task.detached to avoid MainActor isolation issues (Swift 6)
+            let data = try await Task.detached { @Sendable [dto] in
+                let encoder = JSONEncoder()
+                encoder.dateEncodingStrategy = .iso8601
+                return try encoder.encode(dto)
+            }.value
+
+            // Convert to dictionary for Supabase
+            guard let jsonObject = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+                throw NSError(domain: "DatabaseService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to convert DTO to JSON"])
+            }
+
+            // Upsert (insert or update)
             try await supabase
                 .from("game_state")
-                .upsert(dto)
+                .upsert(jsonObject)
                 .execute()
 
             print("[DB] ✅ Saved game state to database")
