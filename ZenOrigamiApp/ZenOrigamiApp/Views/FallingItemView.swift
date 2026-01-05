@@ -3,31 +3,60 @@ import SwiftUI
 /// Visual representation of a falling collectible item
 struct FallingItemView: View {
     let item: FallingItem
-    let emoji: String
+    let emoji: String?
+    let assetName: String?
     @State private var currentY: CGFloat
 
-    init(item: FallingItem, emoji: String) {
+    init(item: FallingItem, emoji: String? = nil, assetName: String? = nil) {
         self.item = item
         self.emoji = emoji
+        self.assetName = assetName
         self._currentY = State(initialValue: item.y)
     }
 
     var body: some View {
         GeometryReader { geometry in
-            Text(emoji)
-                .font(.system(size: item.isCollected ? 48 : 32))
-                .opacity(item.isCollected ? 0 : 1)
-                .scaleEffect(item.isCollected ? 1.5 : 1.0)
-                .position(
-                    x: item.x * geometry.size.width,
-                    y: currentY * geometry.size.height
-                )
-                .onAppear {
-                    withAnimation(.linear(duration: item.duration)) {
-                        currentY = item.targetY
-                    }
+            Group {
+                if let assetName = assetName {
+                    // Use Image asset with animations
+                    Image(assetName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: item.isCollected ? 60 : 40, height: item.isCollected ? 60 : 40)
+                        .modifier(itemAnimation(for: assetName))
+                } else if let emoji = emoji {
+                    // Fallback to emoji
+                    Text(emoji)
+                        .font(.system(size: item.isCollected ? 48 : 32))
                 }
-                .animation(.spring(response: 0.3), value: item.isCollected)
+            }
+            .opacity(item.isCollected ? 0 : 1)
+            .scaleEffect(item.isCollected ? 1.5 : 1.0)
+            .position(
+                x: item.x * geometry.size.width,
+                y: currentY * geometry.size.height
+            )
+            .onAppear {
+                withAnimation(.linear(duration: item.duration)) {
+                    currentY = item.targetY
+                }
+            }
+            .animation(.spring(response: 0.3), value: item.isCollected)
+        }
+    }
+
+    /// Apply appropriate animation based on item type
+    @ViewBuilder
+    private func itemAnimation(for assetName: String) -> some ViewModifier {
+        switch assetName {
+        case "drop":
+            AssetAnimations.DropFalling()
+        case "pearl":
+            AssetAnimations.PearlFalling()
+        case "leaf":
+            AssetAnimations.LeafFluttering()
+        default:
+            AssetAnimations.DropFalling() // Default animation
         }
     }
 }

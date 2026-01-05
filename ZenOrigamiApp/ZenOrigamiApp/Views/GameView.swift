@@ -30,7 +30,7 @@ struct GameView: View {
                 ZStack {
                     // Falling Drops
                     ForEach(fallingItemManager.fallingDrops) { item in
-                        FallingItemView(item: item, emoji: "💧")
+                        FallingItemView(item: item, assetName: "drop")
                             .onTapGesture {
                                 if fallingItemManager.collectDrop(at: item.id) {
                                     viewModel.collect(currency: .drop, amount: 1)
@@ -42,7 +42,7 @@ struct GameView: View {
 
                     // Falling Pearls
                     ForEach(fallingItemManager.fallingPearls) { item in
-                        FallingItemView(item: item, emoji: "🔵")
+                        FallingItemView(item: item, assetName: "pearl")
                             .onTapGesture {
                                 if fallingItemManager.collectPearl(at: item.id) {
                                     viewModel.collect(currency: .pearl, amount: 1)
@@ -54,7 +54,7 @@ struct GameView: View {
 
                     // Falling Leaves
                     ForEach(fallingItemManager.fallingLeaves) { item in
-                        FallingItemView(item: item, emoji: "🍃")
+                        FallingItemView(item: item, assetName: "leaf")
                             .onTapGesture {
                                 if fallingItemManager.collectLeaf(at: item.id) {
                                     viewModel.collect(currency: .leaf, amount: 1)
@@ -79,8 +79,11 @@ struct GameView: View {
 
                     // Companions
                     if viewModel.gameState.companions.origamiFish {
-                        Text("🐟")
-                            .font(.system(size: 32))
+                        Image("companion_fish")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 40, height: 40)
+                            .fishSwimming()
                             .position(
                                 x: (boatPosition * geometry.size.width) - 40,
                                 y: (geometry.size.height * 0.75) + 20
@@ -88,8 +91,11 @@ struct GameView: View {
                     }
 
                     if viewModel.gameState.companions.origamiBird {
-                        Text("🐦")
-                            .font(.system(size: 32))
+                        Image("companion_bird")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 40, height: 40)
+                            .birdHovering()
                             .position(
                                 x: (boatPosition * geometry.size.width) + 40,
                                 y: (geometry.size.height * 0.75) - 40
