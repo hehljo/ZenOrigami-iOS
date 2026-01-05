@@ -16,6 +16,10 @@ class FallingItemManager {
     // MARK: - Configuration
     private let spawnInterval: TimeInterval
     private let fallDuration: TimeInterval = 3.0
+    private let collectionRadius: CGFloat = 0.12  // Normalized screen space (12% of screen width) - increased for larger boat
+
+    // Boat position tracking
+    var boatPosition: CGPoint = CGPoint(x: 0.5, y: 0.6)  // Normalized position (at water surface)
 
     init(spawnInterval: TimeInterval = 2.0) {
         self.spawnInterval = spawnInterval
@@ -81,7 +85,8 @@ class FallingItemManager {
     }
 
     private func spawnPearl() {
-        let item = createFallingItem()
+        // Pearls rise from bottom to surface (opposite of falling)
+        let item = createRisingItem()
         fallingPearls.append(item)
     }
 
@@ -90,12 +95,25 @@ class FallingItemManager {
         fallingLeaves.append(item)
     }
 
+    /// Create a falling item (drops, leaves) - falls from top to bottom
     private func createFallingItem() -> FallingItem {
         let randomX = CGFloat.random(in: 0.1...0.9) // 10-90% of screen width
         return FallingItem(
             x: randomX,
             y: -0.1, // Start above screen
-            targetY: 1.1, // End below screen
+            targetY: 1.1, // End below screen (falls down)
+            duration: fallDuration,
+            worldSpawnPosition: 0.0 // Will be set by ScrollingWorldManager if used
+        )
+    }
+
+    /// Create a rising item (pearls) - rises from bottom to top
+    private func createRisingItem() -> FallingItem {
+        let randomX = CGFloat.random(in: 0.1...0.9) // 10-90% of screen width
+        return FallingItem(
+            x: randomX,
+            y: 1.1, // Start below screen (in water)
+            targetY: -0.1, // Rise to surface (above screen)
             duration: fallDuration,
             worldSpawnPosition: 0.0 // Will be set by ScrollingWorldManager if used
         )
@@ -141,13 +159,63 @@ class FallingItemManager {
         return true
     }
 
+    // MARK: - Collision Detection
+
+    /// Check for collisions between falling items and boat
+    /// Returns IDs of collected items by type
+    func checkCollisions() -> (drops: [UUID], pearls: [UUID], leaves: [UUID]) {
+        var collectedDrops: [UUID] = []
+        var collectedPearls: [UUID] = []
+        var collectedLeaves: [UUID] = []
+
+        // Check drops
+        for item in fallingDrops where !item.isCollected {
+            if isItemNearBoat(item) {
+                collectedDrops.append(item.id)
+            }
+        }
+
+        // Check pearls
+        for item in fallingPearls where !item.isCollected {
+            if isItemNearBoat(item) {
+                collectedPearls.append(item.id)
+            }
+        }
+
+        // Check leaves
+        for item in fallingLeaves where !item.isCollected {
+            if isItemNearBoat(item) {
+                collectedLeaves.append(item.id)
+            }
+        }
+
+        return (collectedDrops, collectedPearls, collectedLeaves)
+    }
+
+    /// Check if an item is within collection radius of the boat
+    private func isItemNearBoat(_ item: FallingItem) -> Bool {
+        let dx = item.x - boatPosition.x
+        let dy = getCurrentItemY(item) - boatPosition.y
+        let distance = sqrt(dx * dx + dy * dy)
+        return distance <= collectionRadius
+    }
+
+    /// Get current Y position of an item (accounting for animation)
+    private func getCurrentItemY(_ item: FallingItem) -> CGFloat {
+        let elapsed = Date().timeIntervalSince(item.startTime)
+        let progress = min(elapsed / item.duration, 1.0)
+        return item.y + (item.targetY - item.y) * progress
+    }
+
     // MARK: - Cleanup
 
     private func cleanupOffscreenItems() {
-        // Remove items that fell off screen (y > 1.0)
-        fallingDrops.removeAll { $0.y > 1.05 }
-        fallingPearls.removeAll { $0.y > 1.05 }
-        fallingLeaves.removeAll { $0.y > 1.05 }
+        // Remove drops and leaves that fell off bottom of screen
+        fallingDrops.removeAll { getCurrentItemY($0) > 1.05 }
+        fallingLeaves.removeAll { getCurrentItemY($0) > 1.05 }
+
+        // Remove pearls that rose off top of screen (they rise up, not fall)
+        fallingPearls.removeAll { getCurrentItemY($0) < -0.05 }
     }
 
     // MARK: - Cleanup

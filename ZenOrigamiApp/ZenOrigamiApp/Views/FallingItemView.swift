@@ -16,7 +16,7 @@ struct FallingItemView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            Group {
+            ZStack {
                 if let assetName = assetName {
                     // Use Image asset with animations
                     itemImage(for: assetName)
@@ -52,24 +52,31 @@ struct FallingItemView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: size, height: size)
+                .shadow(color: .black.opacity(0.4), radius: 3, x: 0, y: 2)
+                .shadow(color: .white.opacity(0.6), radius: 2, x: 0, y: 0)  // Glow
                 .dropFalling()
         case "pearl":
             Image(assetName)
                 .resizable()
                 .scaledToFit()
                 .frame(width: size, height: size)
+                .shadow(color: .black.opacity(0.4), radius: 3, x: 0, y: 2)
+                .shadow(color: .cyan.opacity(0.8), radius: 4, x: 0, y: 0)  // Cyan glow for pearl
                 .pearlFalling()
         case "leaf":
             Image(assetName)
                 .resizable()
                 .scaledToFit()
                 .frame(width: size, height: size)
+                .shadow(color: .black.opacity(0.4), radius: 3, x: 0, y: 2)
+                .shadow(color: .green.opacity(0.6), radius: 2, x: 0, y: 0)  // Green glow
                 .leafFluttering()
         default:
             Image(assetName)
                 .resizable()
                 .scaledToFit()
                 .frame(width: size, height: size)
+                .shadow(color: .black.opacity(0.4), radius: 3, x: 0, y: 2)
         }
     }
 }
