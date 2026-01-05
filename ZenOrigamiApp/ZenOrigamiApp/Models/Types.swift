@@ -260,7 +260,7 @@ struct GameState: Codable, Equatable, @unchecked Sendable {
 }
 
 // MARK: - Database Types (Supabase)
-struct GameStateDTO: Codable, @unchecked Sendable {
+struct GameStateDTO: @unchecked Sendable {
     let id: UUID?
     let userId: UUID
 
@@ -331,7 +331,74 @@ struct GameStateDTO: Codable, @unchecked Sendable {
         case createdAt = "created_at"
         case updatedAt = "updated_at"
     }
+
+    // MARK: - Nonisolated Codable Conformance (Swift 6 Fix)
+
+    nonisolated init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decodeIfPresent(UUID.self, forKey: .id)
+        self.userId = try container.decode(UUID.self, forKey: .userId)
+        self.drops = try container.decode(Int.self, forKey: .drops)
+        self.pearls = try container.decode(Int.self, forKey: .pearls)
+        self.leaves = try container.decode(Int.self, forKey: .leaves)
+        self.boatSpeedLevel = try container.decode(Int.self, forKey: .boatSpeedLevel)
+        self.collectionRadiusLevel = try container.decode(Int.self, forKey: .collectionRadiusLevel)
+        self.dropRateLevel = try container.decode(Int.self, forKey: .dropRateLevel)
+        self.rainCollectorLevel = try container.decode(Int.self, forKey: .rainCollectorLevel)
+        self.origamiFlag = try container.decode(Bool.self, forKey: .origamiFlag)
+        self.currentSkin = try container.decode(String.self, forKey: .currentSkin)
+        self.unlockedSkins = try container.decode([String].self, forKey: .unlockedSkins)
+        self.hasFishCompanion = try container.decode(Bool.self, forKey: .hasFishCompanion)
+        self.hasBirdCompanion = try container.decode(Bool.self, forKey: .hasBirdCompanion)
+        self.unlockedAchievements = try container.decode([String].self, forKey: .unlockedAchievements)
+        self.totalDropsCollected = try container.decode(Int.self, forKey: .totalDropsCollected)
+        self.totalPearlsCollected = try container.decode(Int.self, forKey: .totalPearlsCollected)
+        self.totalLeavesCollected = try container.decode(Int.self, forKey: .totalLeavesCollected)
+        self.totalPlayTime = try container.decode(Int.self, forKey: .totalPlayTime)
+        self.totalUpgradesPurchased = try container.decode(Int.self, forKey: .totalUpgradesPurchased)
+        self.loginStreak = try container.decode(Int.self, forKey: .loginStreak)
+        self.prestigeLevel = try container.decode(Int.self, forKey: .prestigeLevel)
+        self.zenPoints = try container.decode(Int.self, forKey: .zenPoints)
+        self.totalPrestiges = try container.decode(Int.self, forKey: .totalPrestiges)
+        self.lastVisit = try container.decode(Date.self, forKey: .lastVisit)
+        self.createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt)
+        self.updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt)
+    }
+
+    nonisolated func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(id, forKey: .id)
+        try container.encode(userId, forKey: .userId)
+        try container.encode(drops, forKey: .drops)
+        try container.encode(pearls, forKey: .pearls)
+        try container.encode(leaves, forKey: .leaves)
+        try container.encode(boatSpeedLevel, forKey: .boatSpeedLevel)
+        try container.encode(collectionRadiusLevel, forKey: .collectionRadiusLevel)
+        try container.encode(dropRateLevel, forKey: .dropRateLevel)
+        try container.encode(rainCollectorLevel, forKey: .rainCollectorLevel)
+        try container.encode(origamiFlag, forKey: .origamiFlag)
+        try container.encode(currentSkin, forKey: .currentSkin)
+        try container.encode(unlockedSkins, forKey: .unlockedSkins)
+        try container.encode(hasFishCompanion, forKey: .hasFishCompanion)
+        try container.encode(hasBirdCompanion, forKey: .hasBirdCompanion)
+        try container.encode(unlockedAchievements, forKey: .unlockedAchievements)
+        try container.encode(totalDropsCollected, forKey: .totalDropsCollected)
+        try container.encode(totalPearlsCollected, forKey: .totalPearlsCollected)
+        try container.encode(totalLeavesCollected, forKey: .totalLeavesCollected)
+        try container.encode(totalPlayTime, forKey: .totalPlayTime)
+        try container.encode(totalUpgradesPurchased, forKey: .totalUpgradesPurchased)
+        try container.encode(loginStreak, forKey: .loginStreak)
+        try container.encode(prestigeLevel, forKey: .prestigeLevel)
+        try container.encode(zenPoints, forKey: .zenPoints)
+        try container.encode(totalPrestiges, forKey: .totalPrestiges)
+        try container.encode(lastVisit, forKey: .lastVisit)
+        try container.encodeIfPresent(createdAt, forKey: .createdAt)
+        try container.encodeIfPresent(updatedAt, forKey: .updatedAt)
+    }
 }
+
+// MARK: - Codable Conformance
+extension GameStateDTO: Codable {}
 
 // MARK: - DTO Conversion Extensions
 extension GameState {

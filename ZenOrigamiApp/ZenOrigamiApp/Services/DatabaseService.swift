@@ -55,22 +55,10 @@ actor DatabaseService {
         let dto = gameState.toDTO(userId: userId)
 
         do {
-            // Encode in Task.detached to avoid MainActor isolation issues (Swift 6)
-            let data = try await Task.detached { @Sendable [dto] in
-                let encoder = JSONEncoder()
-                encoder.dateEncodingStrategy = .iso8601
-                return try encoder.encode(dto)
-            }.value
-
-            // Convert to dictionary for Supabase
-            guard let jsonObject = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-                throw NSError(domain: "DatabaseService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to convert DTO to JSON"])
-            }
-
-            // Upsert (insert or update)
+            // Upsert (GameStateDTO now has nonisolated Codable - Swift 6 compliant)
             try await supabase
                 .from("game_state")
-                .upsert(jsonObject)
+                .upsert(dto)
                 .execute()
 
             print("[DB] ✅ Saved game state to database")
@@ -150,7 +138,7 @@ actor DatabaseService {
 
 // MARK: - Supporting Types
 
-struct UserProfile: Codable, @unchecked Sendable {
+struct UserProfile: @unchecked Sendable {
     let id: UUID
     let username: String?
     let avatarUrl: String?
@@ -164,4 +152,27 @@ struct UserProfile: Codable, @unchecked Sendable {
         case createdAt = "created_at"
         case updatedAt = "updated_at"
     }
+
+    // MARK: - Nonisolated Codable Conformance (Swift 6 Fix)
+
+    nonisolated init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(UUID.self, forKey: .id)
+        self.username = try container.decodeIfPresent(String.self, forKey: .username)
+        self.avatarUrl = try container.decodeIfPresent(String.self, forKey: .avatarUrl)
+        self.createdAt = try container.decode(Date.self, forKey: .createdAt)
+        self.updatedAt = try container.decode(Date.self, forKey: .updatedAt)
+    }
+
+    nonisolated func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encodeIfPresent(username, forKey: .username)
+        try container.encodeIfPresent(avatarUrl, forKey: .avatarUrl)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
+    }
 }
+
+// MARK: - Codable Conformance
+extension UserProfile: Codable {}
