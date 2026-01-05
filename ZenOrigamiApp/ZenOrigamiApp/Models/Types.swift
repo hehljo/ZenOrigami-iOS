@@ -332,6 +332,66 @@ struct GameStateDTO: @unchecked Sendable {
         case updatedAt = "updated_at"
     }
 
+    // MARK: - Memberwise Initializer (required when implementing custom init)
+
+    init(
+        id: UUID?,
+        userId: UUID,
+        drops: Int,
+        pearls: Int,
+        leaves: Int,
+        boatSpeedLevel: Int,
+        collectionRadiusLevel: Int,
+        dropRateLevel: Int,
+        rainCollectorLevel: Int,
+        origamiFlag: Bool,
+        currentSkin: String,
+        unlockedSkins: [String],
+        hasFishCompanion: Bool,
+        hasBirdCompanion: Bool,
+        unlockedAchievements: [String],
+        totalDropsCollected: Int,
+        totalPearlsCollected: Int,
+        totalLeavesCollected: Int,
+        totalPlayTime: Int,
+        totalUpgradesPurchased: Int,
+        loginStreak: Int,
+        prestigeLevel: Int,
+        zenPoints: Int,
+        totalPrestiges: Int,
+        lastVisit: Date,
+        createdAt: Date?,
+        updatedAt: Date?
+    ) {
+        self.id = id
+        self.userId = userId
+        self.drops = drops
+        self.pearls = pearls
+        self.leaves = leaves
+        self.boatSpeedLevel = boatSpeedLevel
+        self.collectionRadiusLevel = collectionRadiusLevel
+        self.dropRateLevel = dropRateLevel
+        self.rainCollectorLevel = rainCollectorLevel
+        self.origamiFlag = origamiFlag
+        self.currentSkin = currentSkin
+        self.unlockedSkins = unlockedSkins
+        self.hasFishCompanion = hasFishCompanion
+        self.hasBirdCompanion = hasBirdCompanion
+        self.unlockedAchievements = unlockedAchievements
+        self.totalDropsCollected = totalDropsCollected
+        self.totalPearlsCollected = totalPearlsCollected
+        self.totalLeavesCollected = totalLeavesCollected
+        self.totalPlayTime = totalPlayTime
+        self.totalUpgradesPurchased = totalUpgradesPurchased
+        self.loginStreak = loginStreak
+        self.prestigeLevel = prestigeLevel
+        self.zenPoints = zenPoints
+        self.totalPrestiges = totalPrestiges
+        self.lastVisit = lastVisit
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+    }
+
     // MARK: - Nonisolated Codable Conformance (Swift 6 Fix)
 
     nonisolated init(from decoder: Decoder) throws {

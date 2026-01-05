@@ -153,6 +153,16 @@ struct UserProfile: @unchecked Sendable {
         case updatedAt = "updated_at"
     }
 
+    // MARK: - Memberwise Initializer
+
+    init(id: UUID, username: String?, avatarUrl: String?, createdAt: Date, updatedAt: Date) {
+        self.id = id
+        self.username = username
+        self.avatarUrl = avatarUrl
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+    }
+
     // MARK: - Nonisolated Codable Conformance (Swift 6 Fix)
 
     nonisolated init(from decoder: Decoder) throws {
