@@ -20,7 +20,6 @@ struct FallingItemView: View {
                 if let assetName = assetName {
                     // Use Image asset with animations
                     itemImage(for: assetName)
-                        .frame(width: item.isCollected ? 60 : 40, height: item.isCollected ? 60 : 40)
                 } else if let emoji = emoji {
                     // Fallback to emoji
                     Text(emoji)
@@ -45,26 +44,32 @@ struct FallingItemView: View {
     /// Apply appropriate animation based on item type
     @ViewBuilder
     private func itemImage(for assetName: String) -> some View {
+        let size: CGFloat = item.isCollected ? 60 : 40
+
         switch assetName {
         case "drop":
             Image(assetName)
                 .resizable()
                 .scaledToFit()
+                .frame(width: size, height: size)
                 .dropFalling()
         case "pearl":
             Image(assetName)
                 .resizable()
                 .scaledToFit()
+                .frame(width: size, height: size)
                 .pearlFalling()
         case "leaf":
             Image(assetName)
                 .resizable()
                 .scaledToFit()
+                .frame(width: size, height: size)
                 .leafFluttering()
         default:
             Image(assetName)
                 .resizable()
                 .scaledToFit()
+                .frame(width: size, height: size)
         }
     }
 }
