@@ -26,22 +26,32 @@ app_icon_prompt = {
     'name': 'ZenOrigami App Icon',
     'prompt': '''Create an iOS app icon for a zen meditation idle game in a 2.5D stylized minimalist origami art style.
 
-Central composition: Small origami paper boat sailing on a calm water drop.
-The boat is light blue origami with visible geometric fold lines, simple triangular shape.
-The water drop is translucent blue with soft reflections, forming a circular background.
-Zen aesthetic with pastel colors (light blue, teal, white).
+COMPOSITION (centered, clear hierarchy):
+- FOREGROUND: Large prominent origami paper boat (60% of icon size)
+  - Light blue origami paper with visible geometric fold lines
+  - Triangular sails, angular hull, facing right
+  - Clear, bold, instantly recognizable even at 20px
 
-Simple, clean design recognizable at small sizes (20-180px).
-Soft gradients from light blue to teal creating depth.
-Minimalist composition with clear focal point (boat).
-No text, no borders, no complex details.
+- BACKGROUND: Stylized origami mountains
+  - Distant mountain peaks in soft blue/white
+  - Simple angular shapes, layered for depth
+  - Low horizon line (bottom 30% of icon)
+
+- SKY: Gradient from light blue to teal (#7EC8E3 to #4FB3BF)
+  - Soft, calming zen atmosphere
+  - Clean pastel colors
+
+STYLE REQUIREMENTS:
+- Bold, clear shapes (recognizable at 20-180px)
+- High contrast between boat and background
+- Minimal details, maximum impact
+- Zen aesthetic, modern minimalist
+- 2.5D illustration style
 
 Square format 1024x1024px.
-Solid background (gradient from light blue #7EC8E3 to teal #4FB3BF).
-Style: modern minimalist, zen aesthetic, iOS app icon, 2.5D stylized origami illustration.
-
-IMPORTANT: No transparency, solid background (iOS requirement).
-Rounded corners will be added automatically by iOS.''',
+Solid background (NO transparency - iOS requirement).
+Rounded corners added automatically by iOS.
+Style: iOS app icon, game-ready, stylized origami art.''',
     'filename': 'AppIcon.png'
 }
 
