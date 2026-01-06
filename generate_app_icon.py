@@ -47,9 +47,12 @@ STYLE REQUIREMENTS:
 - Minimal details, maximum impact
 - Zen aesthetic, modern minimalist
 - 2.5D illustration style
+- NO white borders or edges
+- Content must extend to all edges of the canvas
 
 Square format 1024x1024px.
 Solid background (NO transparency - iOS requirement).
+Background gradient must reach ALL EDGES with no white border.
 Rounded corners added automatically by iOS.
 Style: iOS app icon, game-ready, stylized origami art.''',
     'filename': 'AppIcon.png'

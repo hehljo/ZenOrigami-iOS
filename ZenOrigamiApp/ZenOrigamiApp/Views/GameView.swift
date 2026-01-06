@@ -79,38 +79,53 @@ struct GameView: View {
                 ZStack {
                     // Falling Drops
                     ForEach(fallingItemManager.fallingDrops) { item in
-                        FallingItemView(item: item, assetName: "drop")
-                            .onTapGesture {
-                                if fallingItemManager.collectDrop(at: item.id) {
-                                    viewModel.collect(currency: .drop, amount: 1)
-                                    SoundManager.shared.playDropCollect()
-                                    HapticFeedback.light()
-                                }
+                        FallingItemView(
+                            item: item,
+                            assetName: "drop",
+                            screenWidth: geometry.size.width,
+                            screenHeight: geometry.size.height
+                        )
+                        .onTapGesture {
+                            if fallingItemManager.collectDrop(at: item.id) {
+                                viewModel.collect(currency: .drop, amount: 1)
+                                SoundManager.shared.playDropCollect()
+                                HapticFeedback.light()
                             }
+                        }
                     }
 
                     // Falling Pearls
                     ForEach(fallingItemManager.fallingPearls) { item in
-                        FallingItemView(item: item, assetName: "pearl")
-                            .onTapGesture {
-                                if fallingItemManager.collectPearl(at: item.id) {
-                                    viewModel.collect(currency: .pearl, amount: 1)
-                                    SoundManager.shared.playPearlCollect()
-                                    HapticFeedback.light()
-                                }
+                        FallingItemView(
+                            item: item,
+                            assetName: "pearl",
+                            screenWidth: geometry.size.width,
+                            screenHeight: geometry.size.height
+                        )
+                        .onTapGesture {
+                            if fallingItemManager.collectPearl(at: item.id) {
+                                viewModel.collect(currency: .pearl, amount: 1)
+                                SoundManager.shared.playPearlCollect()
+                                HapticFeedback.light()
                             }
+                        }
                     }
 
                     // Falling Leaves
                     ForEach(fallingItemManager.fallingLeaves) { item in
-                        FallingItemView(item: item, assetName: "leaf")
-                            .onTapGesture {
-                                if fallingItemManager.collectLeaf(at: item.id) {
-                                    viewModel.collect(currency: .leaf, amount: 1)
-                                    SoundManager.shared.playLeafCollect()
-                                    HapticFeedback.light()
-                                }
+                        FallingItemView(
+                            item: item,
+                            assetName: "leaf",
+                            screenWidth: geometry.size.width,
+                            screenHeight: geometry.size.height
+                        )
+                        .onTapGesture {
+                            if fallingItemManager.collectLeaf(at: item.id) {
+                                viewModel.collect(currency: .leaf, amount: 1)
+                                SoundManager.shared.playLeafCollect()
+                                HapticFeedback.light()
                             }
+                        }
                     }
 
                     // Boat (Player)

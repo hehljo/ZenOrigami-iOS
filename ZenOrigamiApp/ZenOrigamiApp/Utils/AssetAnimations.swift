@@ -14,7 +14,7 @@ enum AssetAnimations {
         let rockingAngle: Double
         let wavePeriod: Double
 
-        init(rockingAngle: Double = 3.0, wavePeriod: Double = 2.5) {
+        init(rockingAngle: Double = 2.0, wavePeriod: Double = 4.0) {  // Slower, more cozy
             self.rockingAngle = rockingAngle
             self.wavePeriod = wavePeriod
         }

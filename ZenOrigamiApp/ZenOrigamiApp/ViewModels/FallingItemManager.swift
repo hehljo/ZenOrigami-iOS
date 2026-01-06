@@ -82,17 +82,20 @@ class FallingItemManager {
     private func spawnDrop() {
         let item = createFallingItem()
         fallingDrops.append(item)
+        print("[Spawn] 💧 Drop at x:\(item.x), y:\(item.y) → \(item.targetY)")
     }
 
     private func spawnPearl() {
         // Pearls rise from bottom to surface (opposite of falling)
         let item = createRisingItem()
         fallingPearls.append(item)
+        print("[Spawn] 🔵 Pearl at x:\(item.x), y:\(item.y) → \(item.targetY) (rising)")
     }
 
     private func spawnLeaf() {
         let item = createFallingItem()
         fallingLeaves.append(item)
+        print("[Spawn] 🍃 Leaf at x:\(item.x), y:\(item.y) → \(item.targetY)")
     }
 
     /// Create a falling item (drops, leaves) - falls from top to bottom
@@ -194,10 +197,18 @@ class FallingItemManager {
 
     /// Check if an item is within collection radius of the boat
     private func isItemNearBoat(_ item: FallingItem) -> Bool {
+        let itemY = getCurrentItemY(item)
         let dx = item.x - boatPosition.x
-        let dy = getCurrentItemY(item) - boatPosition.y
+        let dy = itemY - boatPosition.y
         let distance = sqrt(dx * dx + dy * dy)
-        return distance <= collectionRadius
+        let isNear = distance <= collectionRadius
+
+        // DEBUG: Log first collision check
+        if isNear {
+            print("[Collision] 🎯 Item near boat! itemPos:(\(item.x), \(itemY)), boatPos:(\(boatPosition.x), \(boatPosition.y)), distance:\(distance), radius:\(collectionRadius)")
+        }
+
+        return isNear
     }
 
     /// Get current Y position of an item (accounting for animation)
