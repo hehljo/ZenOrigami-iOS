@@ -23,9 +23,7 @@ class AuthService {
             supabaseKey: supabaseKey,
             options: SupabaseClientOptions(
                 auth: .init(
-                    flowType: .pkce,
                     autoRefreshToken: true,
-                    detectSessionInURL: true,
                     emitLocalSessionAsInitialSession: true  // Fix Supabase warning
                 )
             )
