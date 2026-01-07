@@ -40,16 +40,9 @@ struct TutorialView: View {
 
     var body: some View {
         ZStack {
-            // Background gradient
-            LinearGradient(
-                colors: [
-                    Color(red: 0.6, green: 0.8, blue: 0.9),
-                    Color(red: 0.4, green: 0.7, blue: 0.85)
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            // Background gradient - Quiet Luxury
+            QuietLuxuryTheme.skyGradient
+                .ignoresSafeArea()
 
             VStack(spacing: 40) {
                 Spacer()
@@ -63,13 +56,13 @@ struct TutorialView: View {
                     Text(steps[currentStep].title)
                         .font(.title.bold())
                         .multilineTextAlignment(.center)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(QuietLuxuryTheme.textPrimary)
                         .transition(.slide.combined(with: .opacity))
 
                     Text(steps[currentStep].description)
                         .font(.body)
                         .multilineTextAlignment(.center)
-                        .foregroundStyle(.white.opacity(0.9))
+                        .foregroundStyle(QuietLuxuryTheme.textSecondary)
                         .padding(.horizontal)
                         .transition(.slide.combined(with: .opacity))
                 }
@@ -82,7 +75,7 @@ struct TutorialView: View {
                 HStack(spacing: 8) {
                     ForEach(0..<steps.count, id: \.self) { index in
                         Circle()
-                            .fill(index == currentStep ? Color.white : Color.white.opacity(0.3))
+                            .fill(index == currentStep ? QuietLuxuryTheme.charcoal : QuietLuxuryTheme.softTaupe)
                             .frame(width: 8, height: 8)
                     }
                 }
@@ -97,12 +90,7 @@ struct TutorialView: View {
                             HapticFeedback.selection()
                         } label: {
                             Text("Back")
-                                .font(.headline)
-                                .foregroundStyle(.white)
-                                .padding(.horizontal, 24)
-                                .padding(.vertical, 12)
-                                .background(Color.white.opacity(0.2))
-                                .clipShape(Capsule())
+                                .quietLuxuryButton(style: .secondary, size: .medium)
                         }
                     }
 
@@ -116,12 +104,7 @@ struct TutorialView: View {
                             HapticFeedback.selection()
                         } label: {
                             Text("Next")
-                                .font(.headline)
-                                .foregroundStyle(.white)
-                                .padding(.horizontal, 32)
-                                .padding(.vertical, 12)
-                                .background(Color.blue)
-                                .clipShape(Capsule())
+                                .quietLuxuryButton(style: .primary, size: .medium)
                         }
                     } else {
                         Button {
@@ -130,12 +113,7 @@ struct TutorialView: View {
                             dismiss()
                         } label: {
                             Text("Start Playing!")
-                                .font(.headline)
-                                .foregroundStyle(.white)
-                                .padding(.horizontal, 32)
-                                .padding(.vertical, 12)
-                                .background(Color.green)
-                                .clipShape(Capsule())
+                                .quietLuxuryButton(style: .primary, size: .large)
                         }
                     }
                 }

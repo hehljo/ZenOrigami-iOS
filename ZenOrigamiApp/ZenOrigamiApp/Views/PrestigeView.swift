@@ -23,35 +23,43 @@ struct PrestigeView: View {
                     }
 
                     // Current Prestige
-                    VStack(spacing: 8) {
+                    VStack(alignment: .leading, spacing: QuietLuxuryTheme.Spacing.md) {
                         Text("Current Prestige Level")
-                            .font(.headline)
-                            .foregroundStyle(.secondary)
+                            .font(QuietLuxuryTheme.Typography.bodySmall)
+                            .foregroundStyle(QuietLuxuryTheme.textSecondary)
+                            .textCase(.uppercase)
+                            .tracking(1.2)
+
                         Text("\(viewModel.gameState.prestige.level)")
-                            .font(.system(size: 60, weight: .bold, design: .rounded))
+                            .font(QuietLuxuryTheme.Typography.displayMedium)
+                            .foregroundStyle(QuietLuxuryTheme.textPrimary)
+
                         Text("+\(viewModel.gameState.prestige.level * 10)% idle earnings")
-                            .font(.caption)
-                            .foregroundStyle(.green)
+                            .font(QuietLuxuryTheme.Typography.labelMedium)
+                            .foregroundStyle(QuietLuxuryTheme.mutedSage)
                     }
-                    .padding()
-                    .background(Color.purple.opacity(0.1))
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .refinedCard(padding: QuietLuxuryTheme.Spacing.xl)
 
                     // Zen Points Available
                     let zenPoints = calculateZenPoints()
-                    VStack(spacing: 8) {
+                    VStack(alignment: .leading, spacing: QuietLuxuryTheme.Spacing.md) {
                         Text("Zen Points Available")
-                            .font(.headline)
+                            .font(QuietLuxuryTheme.Typography.bodySmall)
+                            .foregroundStyle(QuietLuxuryTheme.textSecondary)
+                            .textCase(.uppercase)
+                            .tracking(1.2)
+
                         Text("\(zenPoints)")
-                            .font(.system(size: 48, weight: .bold, design: .rounded))
-                            .foregroundStyle(.purple)
+                            .font(QuietLuxuryTheme.Typography.monoLarge)
+                            .foregroundStyle(QuietLuxuryTheme.softTaupe)
+
                         Text("Based on \(viewModel.gameState.totalCollected.drop) total drops")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(QuietLuxuryTheme.Typography.bodySmall)
+                            .foregroundStyle(QuietLuxuryTheme.textTertiary)
                     }
-                    .padding()
-                    .background(Color.blue.opacity(0.1))
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .refinedCard(padding: QuietLuxuryTheme.Spacing.lg)
 
                     // Requirements
                     VStack(alignment: .leading, spacing: 12) {
@@ -100,12 +108,8 @@ struct PrestigeView: View {
                             showConfirmation = true
                         } label: {
                             Text("Prestige Now")
-                                .font(.headline)
-                                .foregroundStyle(.white)
                                 .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.purple)
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                                .quietLuxuryButton(style: .primary, size: .large)
                         }
                     } else {
                         VStack {
@@ -180,10 +184,10 @@ struct RequirementRow: View {
             Spacer()
             Text("\(current) / \(required)")
                 .font(.caption.bold())
-                .foregroundStyle(isMet ? .green : .red)
+                .foregroundStyle(isMet ? QuietLuxuryTheme.mutedSage : QuietLuxuryTheme.dustyRose)
         }
         .padding()
-        .background(isMet ? Color.green.opacity(0.1) : Color.red.opacity(0.1))
+        .background(isMet ? QuietLuxuryTheme.mutedSage.opacity(0.15) : QuietLuxuryTheme.dustyRose.opacity(0.15))
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
@@ -201,7 +205,7 @@ struct BenefitRow: View {
             Spacer()
         }
         .padding()
-        .background(Color.green.opacity(0.1))
+        .background(QuietLuxuryTheme.mutedSage.opacity(0.15))
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
@@ -219,7 +223,7 @@ struct WarningRow: View {
             Spacer()
         }
         .padding()
-        .background(Color.red.opacity(0.1))
+        .background(QuietLuxuryTheme.dustyRose.opacity(0.15))
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }

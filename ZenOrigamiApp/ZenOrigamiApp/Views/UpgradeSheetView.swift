@@ -156,9 +156,14 @@ struct SectionHeader: View {
     var body: some View {
         HStack {
             Text(title)
-                .font(.title2.bold())
+                .font(QuietLuxuryTheme.Typography.headlineSmall)
+                .foregroundStyle(QuietLuxuryTheme.textPrimary)
+                .textCase(.uppercase)
+                .tracking(1.5)
             Spacer()
         }
+        .padding(.top, QuietLuxuryTheme.Spacing.lg)
+        .padding(.bottom, QuietLuxuryTheme.Spacing.sm)
     }
 }
 
@@ -173,60 +178,71 @@ struct UpgradeCard: View {
 
     var body: some View {
         Button(action: onPurchase) {
-            HStack {
-                // Icon
+            HStack(alignment: .center, spacing: QuietLuxuryTheme.Spacing.md) {
+                // Icon (minimal, refined)
                 Text(emoji)
-                    .font(.system(size: 40))
-                    .frame(width: 60, height: 60)
-                    .background(Color.blue.opacity(0.1))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .font(.system(size: 28))
+                    .frame(width: 48, height: 48)
+                    .background(QuietLuxuryTheme.surfaceElevated)
+                    .clipShape(Circle())
 
                 // Info
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: QuietLuxuryTheme.Spacing.xxs) {
                     Text(title)
-                        .font(.headline)
+                        .font(QuietLuxuryTheme.Typography.bodyLarge)
+                        .foregroundStyle(QuietLuxuryTheme.textPrimary)
+
                     Text(description)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    Text("Level \(level)")
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
+                        .font(QuietLuxuryTheme.Typography.bodySmall)
+                        .foregroundStyle(QuietLuxuryTheme.textSecondary)
+
+                    Text("Lv. \(level)")
+                        .font(QuietLuxuryTheme.Typography.labelSmall)
+                        .foregroundStyle(QuietLuxuryTheme.textTertiary)
+                        .textCase(.uppercase)
+                        .tracking(1.0)
                 }
 
                 Spacer()
 
-                // Cost
-                VStack(alignment: .trailing, spacing: 4) {
+                // Cost (refined, monospaced)
+                VStack(alignment: .trailing, spacing: QuietLuxuryTheme.Spacing.xxs) {
                     if cost.drop > 0 {
-                        HStack(spacing: 2) {
+                        HStack(spacing: 4) {
                             Text("💧")
+                                .font(.system(size: 12))
                             Text("\(cost.drop)")
+                                .font(QuietLuxuryTheme.Typography.monoSmall)
                         }
-                        .font(.caption.bold())
                     }
                     if cost.pearl > 0 {
-                        HStack(spacing: 2) {
+                        HStack(spacing: 4) {
                             Text("🔵")
+                                .font(.system(size: 12))
                             Text("\(cost.pearl)")
+                                .font(QuietLuxuryTheme.Typography.monoSmall)
                         }
-                        .font(.caption.bold())
                     }
                     if cost.leaf > 0 {
-                        HStack(spacing: 2) {
+                        HStack(spacing: 4) {
                             Text("🍃")
+                                .font(.system(size: 12))
                             Text("\(cost.leaf)")
+                                .font(QuietLuxuryTheme.Typography.monoSmall)
                         }
-                        .font(.caption.bold())
                     }
                 }
-                .foregroundStyle(canAfford ? .primary : Color.red)
+                .foregroundStyle(canAfford ? QuietLuxuryTheme.textPrimary : QuietLuxuryTheme.dustyRose)
             }
-            .padding()
-            .background(canAfford ? Color.green.opacity(0.1) : Color.gray.opacity(0.1))
-            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .refinedCard(padding: QuietLuxuryTheme.Spacing.md)
+            .overlay(
+                RoundedRectangle(cornerRadius: QuietLuxuryTheme.CornerRadius.lg)
+                    .strokeBorder(canAfford ? QuietLuxuryTheme.mutedSage.opacity(0.3) : Color.clear, lineWidth: 1)
+            )
         }
         .disabled(!canAfford)
         .buttonStyle(.plain)
+        .opacity(canAfford ? 1.0 : 0.6)
     }
 }
 
@@ -241,60 +257,74 @@ struct OneTimeItemCard: View {
 
     var body: some View {
         Button(action: onPurchase) {
-            HStack {
+            HStack(alignment: .center, spacing: QuietLuxuryTheme.Spacing.md) {
                 Text(emoji)
-                    .font(.system(size: 40))
-                    .frame(width: 60, height: 60)
-                    .background(isPurchased ? Color.green.opacity(0.2) : Color.blue.opacity(0.1))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .font(.system(size: 28))
+                    .frame(width: 48, height: 48)
+                    .background(isPurchased ? QuietLuxuryTheme.mutedSage.opacity(0.15) : QuietLuxuryTheme.surfaceElevated)
+                    .clipShape(Circle())
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: QuietLuxuryTheme.Spacing.xxs) {
                     Text(title)
-                        .font(.headline)
+                        .font(QuietLuxuryTheme.Typography.bodyLarge)
+                        .foregroundStyle(QuietLuxuryTheme.textPrimary)
+
                     Text(description)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(QuietLuxuryTheme.Typography.bodySmall)
+                        .foregroundStyle(QuietLuxuryTheme.textSecondary)
                 }
 
                 Spacer()
 
                 if isPurchased {
-                    Text("✓ Owned")
-                        .font(.caption.bold())
-                        .foregroundStyle(.green)
+                    HStack(spacing: 6) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 14))
+                        Text("Owned")
+                            .font(QuietLuxuryTheme.Typography.labelSmall)
+                            .textCase(.uppercase)
+                            .tracking(1.0)
+                    }
+                    .foregroundStyle(QuietLuxuryTheme.mutedSage)
                 } else {
-                    VStack(alignment: .trailing, spacing: 4) {
+                    VStack(alignment: .trailing, spacing: QuietLuxuryTheme.Spacing.xxs) {
                         if cost.drop > 0 {
-                            HStack(spacing: 2) {
+                            HStack(spacing: 4) {
                                 Text("💧")
+                                    .font(.system(size: 12))
                                 Text("\(cost.drop)")
+                                    .font(QuietLuxuryTheme.Typography.monoSmall)
                             }
-                            .font(.caption.bold())
                         }
                         if cost.pearl > 0 {
-                            HStack(spacing: 2) {
+                            HStack(spacing: 4) {
                                 Text("🔵")
+                                    .font(.system(size: 12))
                                 Text("\(cost.pearl)")
+                                    .font(QuietLuxuryTheme.Typography.monoSmall)
                             }
-                            .font(.caption.bold())
                         }
                         if cost.leaf > 0 {
-                            HStack(spacing: 2) {
+                            HStack(spacing: 4) {
                                 Text("🍃")
+                                    .font(.system(size: 12))
                                 Text("\(cost.leaf)")
+                                    .font(QuietLuxuryTheme.Typography.monoSmall)
                             }
-                            .font(.caption.bold())
                         }
                     }
-                    .foregroundStyle(canAfford ? .primary : Color.red)
+                    .foregroundStyle(canAfford ? QuietLuxuryTheme.textPrimary : QuietLuxuryTheme.dustyRose)
                 }
             }
-            .padding()
-            .background(isPurchased ? Color.green.opacity(0.1) : (canAfford ? Color.blue.opacity(0.1) : Color.gray.opacity(0.1)))
-            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .refinedCard(padding: QuietLuxuryTheme.Spacing.md)
+            .overlay(
+                RoundedRectangle(cornerRadius: QuietLuxuryTheme.CornerRadius.lg)
+                    .strokeBorder(isPurchased ? QuietLuxuryTheme.mutedSage.opacity(0.3) : Color.clear, lineWidth: 1)
+            )
         }
         .disabled(isPurchased || !canAfford)
         .buttonStyle(.plain)
+        .opacity((isPurchased || !canAfford) ? 0.6 : 1.0)
     }
 }
 

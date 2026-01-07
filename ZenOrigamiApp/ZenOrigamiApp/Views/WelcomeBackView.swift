@@ -44,7 +44,7 @@ struct WelcomeBackView: View {
                 }
             }
             .padding()
-            .background(Color.blue.opacity(0.1))
+            .background(QuietLuxuryTheme.surfaceElevated)
             .clipShape(RoundedRectangle(cornerRadius: 20))
 
             Spacer()
@@ -55,12 +55,8 @@ struct WelcomeBackView: View {
                 dismiss()
             } label: {
                 Text("Claim Rewards")
-                    .font(.headline)
-                    .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.blue)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .quietLuxuryButton(style: .primary, size: .large)
             }
             .buttonStyle(.plain)
         }

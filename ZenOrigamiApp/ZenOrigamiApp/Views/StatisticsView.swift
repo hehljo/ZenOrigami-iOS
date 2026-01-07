@@ -99,19 +99,27 @@ struct StatCard: View {
     let value: String
 
     var body: some View {
-        VStack(spacing: 8) {
-            Text(emoji)
-                .font(.system(size: 60))
-            Text(title)
-                .font(.headline)
-                .foregroundStyle(.secondary)
-            Text(value)
-                .font(.title.bold())
+        VStack(alignment: .leading, spacing: QuietLuxuryTheme.Spacing.md) {
+            HStack {
+                Text(emoji)
+                    .font(.system(size: 32))
+                Spacer()
+            }
+
+            VStack(alignment: .leading, spacing: QuietLuxuryTheme.Spacing.xs) {
+                Text(title)
+                    .font(QuietLuxuryTheme.Typography.bodySmall)
+                    .foregroundStyle(QuietLuxuryTheme.textSecondary)
+                    .textCase(.uppercase)
+                    .tracking(1.2)
+
+                Text(value)
+                    .font(QuietLuxuryTheme.Typography.monoMedium)
+                    .foregroundStyle(QuietLuxuryTheme.textPrimary)
+            }
         }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(Color.blue.opacity(0.1))
-        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .refinedCard(padding: QuietLuxuryTheme.Spacing.lg)
     }
 }
 
@@ -121,16 +129,22 @@ struct StatRow: View {
     let value: String
 
     var body: some View {
-        HStack {
+        HStack(spacing: QuietLuxuryTheme.Spacing.md) {
             Text(emoji)
-                .font(.title2)
+                .font(.system(size: 20))
+                .frame(width: 28)
+
             Text(label)
-                .font(.body)
+                .font(QuietLuxuryTheme.Typography.bodyMedium)
+                .foregroundStyle(QuietLuxuryTheme.textPrimary)
+
             Spacer()
+
             Text(value)
-                .font(.body.bold())
-                .foregroundStyle(.secondary)
+                .font(QuietLuxuryTheme.Typography.monoSmall)
+                .foregroundStyle(QuietLuxuryTheme.textSecondary)
         }
+        .padding(.vertical, QuietLuxuryTheme.Spacing.sm)
     }
 }
 

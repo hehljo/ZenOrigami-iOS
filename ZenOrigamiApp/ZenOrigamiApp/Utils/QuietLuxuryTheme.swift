@@ -94,6 +94,30 @@ enum QuietLuxuryTheme {
         EmptyView()
             .shadow(color: charcoal.opacity(opacity), radius: radius, x: 0, y: 4)
     }
+
+    // MARK: - Typography (Refined Hierarchy)
+
+    enum Typography {
+        static let displayLarge = Font.system(size: 72, weight: .thin, design: .default)
+        static let displayMedium = Font.system(size: 56, weight: .light, design: .default)
+        static let displaySmall = Font.system(size: 40, weight: .light, design: .default)
+
+        static let headlineLarge = Font.system(size: 28, weight: .regular, design: .default)
+        static let headlineMedium = Font.system(size: 22, weight: .medium, design: .default)
+        static let headlineSmall = Font.system(size: 18, weight: .medium, design: .default)
+
+        static let bodyLarge = Font.system(size: 16, weight: .regular, design: .default)
+        static let bodyMedium = Font.system(size: 14, weight: .regular, design: .default)
+        static let bodySmall = Font.system(size: 12, weight: .regular, design: .default)
+
+        static let labelLarge = Font.system(size: 14, weight: .medium, design: .default)
+        static let labelMedium = Font.system(size: 12, weight: .medium, design: .default)
+        static let labelSmall = Font.system(size: 10, weight: .medium, design: .default)
+
+        static let monoLarge = Font.system(size: 48, weight: .light, design: .monospaced)
+        static let monoMedium = Font.system(size: 32, weight: .regular, design: .monospaced)
+        static let monoSmall = Font.system(size: 20, weight: .regular, design: .monospaced)
+    }
 }
 
 // MARK: - View Extensions
@@ -105,6 +129,23 @@ extension View {
         size: QuietLuxuryButtonSize = .medium
     ) -> some View {
         modifier(QuietLuxuryButtonModifier(style: style, size: size))
+    }
+
+    /// Apply refined card style (admin dashboard aesthetic)
+    func refinedCard(padding: CGFloat = 24) -> some View {
+        self
+            .padding(padding)
+            .background(QuietLuxuryTheme.surface)
+            .clipShape(RoundedRectangle(cornerRadius: QuietLuxuryTheme.CornerRadius.lg))
+            .shadow(color: QuietLuxuryTheme.charcoal.opacity(0.04), radius: 8, x: 0, y: 2)
+            .shadow(color: QuietLuxuryTheme.charcoal.opacity(0.02), radius: 2, x: 0, y: 1)
+    }
+
+    /// Apply subtle divider
+    func subtleDivider() -> some View {
+        Rectangle()
+            .fill(QuietLuxuryTheme.divider)
+            .frame(height: 1)
     }
 }
 

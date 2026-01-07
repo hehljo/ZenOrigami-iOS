@@ -30,23 +30,26 @@ struct DailyRewardView: View {
             }
 
             // Current Streak
-            VStack(spacing: 4) {
+            VStack(alignment: .leading, spacing: QuietLuxuryTheme.Spacing.md) {
                 Text("Current Streak")
-                    .font(.headline)
-                    .foregroundStyle(.secondary)
-                HStack(spacing: 4) {
+                    .font(QuietLuxuryTheme.Typography.bodySmall)
+                    .foregroundStyle(QuietLuxuryTheme.textSecondary)
+                    .textCase(.uppercase)
+                    .tracking(1.2)
+
+                HStack(alignment: .firstTextBaseline, spacing: QuietLuxuryTheme.Spacing.sm) {
                     Text("🔥")
-                        .font(.title)
+                        .font(.system(size: 32))
                     Text("\(viewModel.gameState.loginStreak)")
-                        .font(.system(size: 48, weight: .bold, design: .rounded))
+                        .font(QuietLuxuryTheme.Typography.monoLarge)
+                        .foregroundStyle(QuietLuxuryTheme.textPrimary)
                     Text("days")
-                        .font(.title3)
-                        .foregroundStyle(.secondary)
+                        .font(QuietLuxuryTheme.Typography.bodyMedium)
+                        .foregroundStyle(QuietLuxuryTheme.textSecondary)
                 }
             }
-            .padding()
-            .background(Color.orange.opacity(0.1))
-            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .refinedCard(padding: QuietLuxuryTheme.Spacing.lg)
 
             // Rewards Grid
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 12) {
@@ -68,12 +71,8 @@ struct DailyRewardView: View {
                     claimDailyReward()
                 } label: {
                     Text("Claim Today's Reward")
-                        .font(.headline)
-                        .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.green)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .quietLuxuryButton(style: .primary, size: .large)
                 }
             } else {
                 Text("Come back tomorrow!")
@@ -137,16 +136,16 @@ struct DailyRewardCard: View {
 
             if isClaimed {
                 Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(.green)
+                    .foregroundStyle(QuietLuxuryTheme.mutedSage)
             }
         }
         .frame(maxWidth: .infinity)
         .padding()
-        .background(isCurrent ? Color.blue : (isClaimed ? Color.green.opacity(0.1) : Color.gray.opacity(0.1)))
+        .background(isCurrent ? QuietLuxuryTheme.softBlueGray : (isClaimed ? QuietLuxuryTheme.mutedSage.opacity(0.15) : QuietLuxuryTheme.surfaceElevated))
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .overlay(
             RoundedRectangle(cornerRadius: 12)
-                .stroke(isCurrent ? Color.blue : Color.clear, lineWidth: 2)
+                .stroke(isCurrent ? QuietLuxuryTheme.softBlueGray : Color.clear, lineWidth: 2)
         )
     }
 }

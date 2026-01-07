@@ -86,7 +86,7 @@ struct AchievementCard: View {
                 HStack(spacing: 4) {
                     Image(systemName: "star.fill")
                         .font(.caption2)
-                        .foregroundStyle(.yellow)
+                        .foregroundStyle(QuietLuxuryTheme.champagne)
                     Text("+\(achievement.reward)")
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -105,12 +105,12 @@ struct AchievementCard: View {
         }
         .padding()
         .frame(maxWidth: .infinity)
-        .background(achievementState.unlocked ? Color.blue.opacity(0.1) : Color.gray.opacity(0.1))
+        .background(achievementState.unlocked ? QuietLuxuryTheme.softBlueGray.opacity(0.15) : QuietLuxuryTheme.surfaceElevated)
         .cornerRadius(12)
         .overlay {
             if achievementState.unlocked {
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.blue, lineWidth: 2)
+                    .stroke(QuietLuxuryTheme.softBlueGray, lineWidth: 2)
             }
         }
     }
