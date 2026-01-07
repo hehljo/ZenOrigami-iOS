@@ -52,14 +52,14 @@ enum AssetAnimations {
                 .offset(y: yOffset)
                 .onAppear {
                     withAnimation(
-                        .easeInOut(duration: 3.5)
+                        .easeInOut(duration: 5.0)  // Slower, more elegant
                         .repeatForever(autoreverses: true)
                     ) {
-                        angle = 1.5
+                        angle = 1.0  // Less angle for cozy feel
                     }
 
                     withAnimation(
-                        .easeInOut(duration: 3.0)
+                        .easeInOut(duration: 4.5)  // Slower vertical motion
                         .repeatForever(autoreverses: true)
                     ) {
                         yOffset = 3
@@ -70,25 +70,14 @@ enum AssetAnimations {
 
     // MARK: - Falling Item Animations
 
-    /// Water drop falling with rotation
+    /// Water drop falling (no rotation - smooth cozy)
     struct DropFalling: ViewModifier {
-        @State private var rotation: Double = 0
-
         func body(content: Content) -> some View {
-            content
-                .rotationEffect(.degrees(rotation))
-                .onAppear {
-                    withAnimation(
-                        .linear(duration: 2.0)
-                        .repeatForever(autoreverses: false)
-                    ) {
-                        rotation = 360
-                    }
-                }
+            content  // No animation - just falls smoothly
         }
     }
 
-    /// Pearl falling with glitter effect
+    /// Pearl falling with subtle shimmer (quiet luxury)
     struct PearlFalling: ViewModifier {
         @State private var scale: Double = 1.0
         @State private var opacity: Double = 1.0
@@ -99,17 +88,17 @@ enum AssetAnimations {
                 .opacity(opacity)
                 .onAppear {
                     withAnimation(
-                        .easeInOut(duration: 0.6)
+                        .easeInOut(duration: 1.5)  // Slower, more elegant
                         .repeatForever(autoreverses: true)
                     ) {
-                        scale = 1.15
-                        opacity = 0.8
+                        scale = 1.08  // Subtle effect
+                        opacity = 0.9  // Less opacity change
                     }
                 }
         }
     }
 
-    /// Leaf falling with flutter
+    /// Leaf falling with gentle flutter (cozy)
     struct LeafFluttering: ViewModifier {
         @State private var rotation: Double = 0
         @State private var xOffset: Double = 0
@@ -120,11 +109,11 @@ enum AssetAnimations {
                 .offset(x: xOffset)
                 .onAppear {
                     withAnimation(
-                        .easeInOut(duration: 1.5)
+                        .easeInOut(duration: 2.5)  // Slower, more gentle
                         .repeatForever(autoreverses: true)
                     ) {
-                        rotation = 15
-                        xOffset = 10
+                        rotation = 10  // Less rotation
+                        xOffset = 6  // Less horizontal movement
                     }
                 }
         }
@@ -132,7 +121,7 @@ enum AssetAnimations {
 
     // MARK: - Companion Animations
 
-    /// Fish swimming motion
+    /// Fish swimming motion (smooth and calm)
     struct FishSwimming: ViewModifier {
         @State private var yOffset: Double = 0
         @State private var xOffset: Double = 0
@@ -142,23 +131,23 @@ enum AssetAnimations {
                 .offset(x: xOffset, y: yOffset)
                 .onAppear {
                     withAnimation(
-                        .easeInOut(duration: 2.0)
+                        .easeInOut(duration: 3.0)  // Slower swimming
                         .repeatForever(autoreverses: true)
                     ) {
-                        yOffset = 8
+                        yOffset = 6  // Less vertical movement
                     }
 
                     withAnimation(
-                        .easeInOut(duration: 3.0)
+                        .easeInOut(duration: 4.5)  // Very slow horizontal
                         .repeatForever(autoreverses: true)
                     ) {
-                        xOffset = 5
+                        xOffset = 4  // Subtle movement
                     }
                 }
         }
     }
 
-    /// Bird hovering motion
+    /// Bird hovering motion (gentle and calm)
     struct BirdHovering: ViewModifier {
         @State private var yOffset: Double = 0
         @State private var wingFlap: Double = 1.0
@@ -169,17 +158,17 @@ enum AssetAnimations {
                 .scaleEffect(y: wingFlap)
                 .onAppear {
                     withAnimation(
-                        .easeInOut(duration: 1.5)
+                        .easeInOut(duration: 2.5)  // Slower hovering
                         .repeatForever(autoreverses: true)
                     ) {
-                        yOffset = -10
+                        yOffset = -8  // Less vertical movement
                     }
 
                     withAnimation(
-                        .easeInOut(duration: 0.3)
+                        .easeInOut(duration: 0.6)  // Slower wing flap
                         .repeatForever(autoreverses: true)
                     ) {
-                        wingFlap = 1.05
+                        wingFlap = 1.03  // Subtle wing movement
                     }
                 }
         }
@@ -187,7 +176,7 @@ enum AssetAnimations {
 
     // MARK: - Particle Effects
 
-    /// Collect sparkles burst
+    /// Collect sparkles burst (subtle and elegant)
     struct CollectSparkles: ViewModifier {
         @State private var opacity: Double = 1.0
         @State private var scale: Double = 0.5
@@ -201,20 +190,20 @@ enum AssetAnimations {
                 .scaleEffect(scale)
                 .rotationEffect(.degrees(rotation))
                 .onAppear {
-                    withAnimation(.easeOut(duration: 0.8)) {
+                    withAnimation(.easeOut(duration: 1.2)) {  // Slower, more graceful
                         opacity = 0
-                        scale = 2.0
-                        rotation = 180
+                        scale = 1.8  // Less dramatic
+                        rotation = 90  // Less rotation
                     }
 
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
                         onComplete()
                     }
                 }
         }
     }
 
-    /// Water splash effect
+    /// Water splash effect (gentle)
     struct WaterSplash: ViewModifier {
         @State private var opacity: Double = 1.0
         @State private var yOffset: Double = 0
@@ -226,12 +215,12 @@ enum AssetAnimations {
                 .opacity(opacity)
                 .offset(y: yOffset)
                 .onAppear {
-                    withAnimation(.easeOut(duration: 0.6)) {
+                    withAnimation(.easeOut(duration: 1.0)) {  // Slower splash
                         opacity = 0
-                        yOffset = -30
+                        yOffset = -20  // Less dramatic movement
                     }
 
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                         onComplete()
                     }
                 }
@@ -240,16 +229,16 @@ enum AssetAnimations {
 
     // MARK: - Idle Animations
 
-    /// Flag waving
+    /// Flag waving (gentle breeze)
     struct FlagWaving: ViewModifier {
         @State private var wavePhase: Double = 0
 
         func body(content: Content) -> some View {
             content
-                .rotationEffect(.degrees(sin(wavePhase) * 5))
+                .rotationEffect(.degrees(sin(wavePhase) * 3))  // Less movement
                 .onAppear {
                     withAnimation(
-                        .linear(duration: 1.0)
+                        .linear(duration: 1.8)  // Slower waving
                         .repeatForever(autoreverses: false)
                     ) {
                         wavePhase = .pi * 2
@@ -258,7 +247,7 @@ enum AssetAnimations {
         }
     }
 
-    /// Achievement star rotation
+    /// Achievement star rotation (subtle elegance)
     struct StarRotation: ViewModifier {
         @State private var rotation: Double = 0
         @State private var scale: Double = 1.0
@@ -269,17 +258,17 @@ enum AssetAnimations {
                 .scaleEffect(scale)
                 .onAppear {
                     withAnimation(
-                        .linear(duration: 4.0)
+                        .linear(duration: 8.0)  // Much slower rotation
                         .repeatForever(autoreverses: false)
                     ) {
                         rotation = 360
                     }
 
                     withAnimation(
-                        .easeInOut(duration: 1.5)
+                        .easeInOut(duration: 2.5)  // Slower pulsing
                         .repeatForever(autoreverses: true)
                     ) {
-                        scale = 1.1
+                        scale = 1.05  // Subtle scale change
                     }
                 }
         }
