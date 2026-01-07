@@ -7,34 +7,34 @@ struct TutorialView: View {
 
     let steps: [TutorialStep] = [
         TutorialStep(
-            emoji: "🚤",
-            title: "Welcome to Zen Origami Journey!",
-            description: "Guide your origami boat through a peaceful idle adventure"
+            icon: "sailboat.fill",
+            title: "Welcome to Zen Origami",
+            description: "Guide your origami boat through a peaceful idle journey"
         ),
         TutorialStep(
-            emoji: "💧",
-            title: "Collect Drops",
-            description: "Tap falling drops, pearls, and leaves to collect them"
+            icon: "drop.fill",
+            title: "Collect Resources",
+            description: "Tap falling items to collect drops, pearls, and leaves"
         ),
         TutorialStep(
-            emoji: "⬆️",
-            title: "Buy Upgrades",
-            description: "Spend drops to improve your boat and collection abilities"
+            icon: "arrow.up.circle.fill",
+            title: "Purchase Upgrades",
+            description: "Invest resources to improve your boat and abilities"
         ),
         TutorialStep(
-            emoji: "😴",
-            title: "Earn While Offline",
-            description: "Your boat continues collecting drops even when you're away"
+            icon: "moon.stars.fill",
+            title: "Passive Earnings",
+            description: "Your boat continues collecting resources while offline"
         ),
         TutorialStep(
-            emoji: "🏆",
-            title: "Unlock Achievements",
-            description: "Complete challenges to earn bonus drops and rewards"
+            icon: "trophy.fill",
+            title: "Complete Achievements",
+            description: "Unlock challenges to earn bonus resources and rewards"
         ),
         TutorialStep(
-            emoji: "🎉",
-            title: "Ready to Play!",
-            description: "Tap anywhere to collect your first drop and begin your journey"
+            icon: "checkmark.circle.fill",
+            title: "Begin Your Journey",
+            description: "You're ready to start your zen origami adventure"
         )
     ]
 
@@ -49,8 +49,9 @@ struct TutorialView: View {
 
                 // Step content
                 VStack(spacing: 20) {
-                    Text(steps[currentStep].emoji)
-                        .font(.system(size: 100))
+                    Image(systemName: steps[currentStep].icon)
+                        .font(.system(size: 64, weight: .thin))
+                        .foregroundStyle(QuietLuxuryTheme.textSecondary)
                         .transition(.scale.combined(with: .opacity))
 
                     Text(steps[currentStep].title)
@@ -126,7 +127,7 @@ struct TutorialView: View {
 }
 
 struct TutorialStep {
-    let emoji: String
+    let icon: String
     let title: String
     let description: String
 }

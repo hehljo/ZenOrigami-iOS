@@ -12,10 +12,11 @@ struct PrestigeView: View {
                 VStack(spacing: 24) {
                     // Header
                     VStack(spacing: 12) {
-                        Text("⭐")
-                            .font(.system(size: 80))
+                        Image(systemName: "star.fill")
+                            .font(.system(size: 48, weight: .thin))
+                            .foregroundStyle(QuietLuxuryTheme.softTaupe)
                         Text("Prestige")
-                            .font(.largeTitle.bold())
+                            .font(QuietLuxuryTheme.Typography.headlineLarge)
                         Text("Reset progress for permanent bonuses")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
@@ -177,10 +178,12 @@ struct RequirementRow: View {
     var isMet: Bool { current >= required }
 
     var body: some View {
-        HStack {
-            Text(emoji)
+        HStack(spacing: QuietLuxuryTheme.Spacing.md) {
+            Image(systemName: "drop.fill")
+                .font(.system(size: 14, weight: .light))
+                .foregroundStyle(QuietLuxuryTheme.textTertiary)
             Text(label)
-                .font(.body)
+                .font(QuietLuxuryTheme.Typography.bodyMedium)
             Spacer()
             Text("\(current) / \(required)")
                 .font(.caption.bold())
@@ -196,12 +199,26 @@ struct BenefitRow: View {
     let emoji: String
     let text: String
 
+    private var sfSymbol: String {
+        switch emoji {
+        case "📈": return "chart.line.uptrend.xyaxis"
+        case "🌟": return "sparkles"
+        case "🏆": return "trophy.fill"
+        case "♾️": return "infinity"
+        case "🦢": return "bird.fill"
+        case "🐟": return "fish.fill"
+        case "📊": return "chart.bar.fill"
+        default: return "checkmark.circle.fill"
+        }
+    }
+
     var body: some View {
-        HStack {
-            Text(emoji)
-                .font(.title3)
+        HStack(spacing: QuietLuxuryTheme.Spacing.md) {
+            Image(systemName: sfSymbol)
+                .font(.system(size: 14, weight: .light))
+                .foregroundStyle(QuietLuxuryTheme.mutedSage)
             Text(text)
-                .font(.body)
+                .font(QuietLuxuryTheme.Typography.bodyMedium)
             Spacer()
         }
         .padding()
@@ -214,12 +231,22 @@ struct WarningRow: View {
     let emoji: String
     let text: String
 
+    private var sfSymbol: String {
+        switch emoji {
+        case "💧": return "drop.fill"
+        case "⬆️": return "arrow.up.circle.fill"
+        case "🚩": return "flag.fill"
+        default: return "exclamationmark.triangle.fill"
+        }
+    }
+
     var body: some View {
-        HStack {
-            Text(emoji)
-                .font(.title3)
+        HStack(spacing: QuietLuxuryTheme.Spacing.md) {
+            Image(systemName: sfSymbol)
+                .font(.system(size: 14, weight: .light))
+                .foregroundStyle(QuietLuxuryTheme.dustyRose)
             Text(text)
-                .font(.body)
+                .font(QuietLuxuryTheme.Typography.bodyMedium)
             Spacer()
         }
         .padding()

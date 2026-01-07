@@ -101,8 +101,9 @@ struct StatCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: QuietLuxuryTheme.Spacing.md) {
             HStack {
-                Text(emoji)
-                    .font(.system(size: 32))
+                Image(systemName: "clock.fill")
+                    .font(.system(size: 20, weight: .light))
+                    .foregroundStyle(QuietLuxuryTheme.textTertiary)
                 Spacer()
             }
 
@@ -128,10 +129,32 @@ struct StatRow: View {
     let label: String
     let value: String
 
+    private var sfSymbol: String {
+        switch label {
+        case "Total Drops": return "drop.fill"
+        case "Total Pearls": return "circle.fill"
+        case "Total Leaves": return "leaf.fill"
+        case "Total Upgrades": return "arrow.up.circle.fill"
+        case "Speed Level": return "bolt.fill"
+        case "Radius Level": return "scope"
+        case "Rate Level": return "timer"
+        case "Collector Level": return "cloud.rain.fill"
+        case "Prestige Level": return "star.fill"
+        case "Zen Points": return "sparkles"
+        case "Total Prestiges": return "arrow.circlepath"
+        case "Per Hour (Offline)": return "moon.stars.fill"
+        case "Login Streak": return "calendar.badge.clock"
+        case "Account Created": return "calendar.badge.plus"
+        case "Last Played": return "clock.badge.checkmark"
+        default: return "circle.fill"
+        }
+    }
+
     var body: some View {
         HStack(spacing: QuietLuxuryTheme.Spacing.md) {
-            Text(emoji)
-                .font(.system(size: 20))
+            Image(systemName: sfSymbol)
+                .font(.system(size: 14, weight: .light))
+                .foregroundStyle(QuietLuxuryTheme.textTertiary)
                 .frame(width: 28)
 
             Text(label)

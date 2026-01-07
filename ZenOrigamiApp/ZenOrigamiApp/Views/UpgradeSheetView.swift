@@ -176,12 +176,23 @@ struct UpgradeCard: View {
     let canAfford: Bool
     let onPurchase: () -> Void
 
+    private var sfSymbol: String {
+        switch title {
+        case "Boat Speed": return "bolt.fill"
+        case "Collection Radius": return "scope"
+        case "Drop Rate": return "timer"
+        case "Rain Collector": return "cloud.rain.fill"
+        default: return "arrow.up.circle.fill"
+        }
+    }
+
     var body: some View {
         Button(action: onPurchase) {
             HStack(alignment: .center, spacing: QuietLuxuryTheme.Spacing.md) {
                 // Icon (minimal, refined)
-                Text(emoji)
-                    .font(.system(size: 28))
+                Image(systemName: sfSymbol)
+                    .font(.system(size: 18, weight: .light))
+                    .foregroundStyle(QuietLuxuryTheme.textSecondary)
                     .frame(width: 48, height: 48)
                     .background(QuietLuxuryTheme.surfaceElevated)
                     .clipShape(Circle())
@@ -255,11 +266,22 @@ struct OneTimeItemCard: View {
     let canAfford: Bool
     let onPurchase: () -> Void
 
+    private var sfSymbol: String {
+        switch title {
+        case "Origami Flag": return "flag.fill"
+        case "Swan Skin": return "bird.fill"
+        case "Origami Fish": return "fish.fill"
+        case "Origami Bird": return "bird.fill"
+        default: return "star.fill"
+        }
+    }
+
     var body: some View {
         Button(action: onPurchase) {
             HStack(alignment: .center, spacing: QuietLuxuryTheme.Spacing.md) {
-                Text(emoji)
-                    .font(.system(size: 28))
+                Image(systemName: sfSymbol)
+                    .font(.system(size: 18, weight: .light))
+                    .foregroundStyle(QuietLuxuryTheme.textSecondary)
                     .frame(width: 48, height: 48)
                     .background(isPurchased ? QuietLuxuryTheme.mutedSage.opacity(0.15) : QuietLuxuryTheme.surfaceElevated)
                     .clipShape(Circle())

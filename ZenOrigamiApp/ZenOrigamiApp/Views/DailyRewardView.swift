@@ -19,10 +19,11 @@ struct DailyRewardView: View {
         VStack(spacing: 24) {
             // Header
             VStack(spacing: 8) {
-                Text("🎁")
-                    .font(.system(size: 60))
+                Image(systemName: "gift.fill")
+                    .font(.system(size: 36, weight: .thin))
+                    .foregroundStyle(QuietLuxuryTheme.textSecondary)
                 Text("Daily Rewards")
-                    .font(.largeTitle.bold())
+                    .font(QuietLuxuryTheme.Typography.headlineLarge)
                 Text("Login every day for bigger rewards!")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -38,8 +39,9 @@ struct DailyRewardView: View {
                     .tracking(1.2)
 
                 HStack(alignment: .firstTextBaseline, spacing: QuietLuxuryTheme.Spacing.sm) {
-                    Text("🔥")
-                        .font(.system(size: 32))
+                    Image(systemName: "flame.fill")
+                        .font(.system(size: 24, weight: .light))
+                        .foregroundStyle(QuietLuxuryTheme.champagne)
                     Text("\(viewModel.gameState.loginStreak)")
                         .font(QuietLuxuryTheme.Typography.monoLarge)
                         .foregroundStyle(QuietLuxuryTheme.textPrimary)
@@ -115,16 +117,14 @@ struct DailyRewardCard: View {
     var body: some View {
         VStack(spacing: 8) {
             Text("Day \(day)")
-                .font(.caption.bold())
-                .foregroundStyle(isCurrent ? .white : .secondary)
+                .font(QuietLuxuryTheme.Typography.labelSmall)
+                .foregroundStyle(isCurrent ? QuietLuxuryTheme.surface : QuietLuxuryTheme.textSecondary)
+                .textCase(.uppercase)
+                .tracking(1.0)
 
-            if day == 7 {
-                Text("🎉")
-                    .font(.title)
-            } else {
-                Text("🎁")
-                    .font(.title2)
-            }
+            Image(systemName: day == 7 ? "star.fill" : "gift.fill")
+                .font(.system(size: day == 7 ? 24 : 20, weight: .light))
+                .foregroundStyle(isCurrent ? QuietLuxuryTheme.surface : QuietLuxuryTheme.textTertiary)
 
             HStack(spacing: 2) {
                 Text("💧")
