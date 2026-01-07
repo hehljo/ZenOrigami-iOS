@@ -16,34 +16,43 @@ struct GameView: View {
 
     var body: some View {
         ZStack {
-            // Sky gradient (top 60% of screen)
-            LinearGradient(
-                colors: [
-                    Color(red: 0.53, green: 0.81, blue: 0.92),  // Light sky blue
-                    Color(red: 0.68, green: 0.85, blue: 0.90)   // Lighter near horizon
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+            // Quiet Luxury sky gradient
+            QuietLuxuryTheme.skyGradient
+                .ignoresSafeArea()
 
-            // Mountains (parallax background)
+            // Parallax background layers
             GeometryReader { geometry in
-                // Far mountains (slowest parallax)
+                // Clouds (slowest)
+                Image("parallax_clouds")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: geometry.size.width, height: geometry.size.height * 0.3)
+                    .position(x: geometry.size.width / 2, y: geometry.size.height * 0.2)
+                    .opacity(0.4)
+
+                // Far mountains
                 Image("parallax_mountains_far")
                     .resizable()
                     .scaledToFill()
                     .frame(width: geometry.size.width, height: geometry.size.height * 0.4)
                     .position(x: geometry.size.width / 2, y: geometry.size.height * 0.35)
-                    .opacity(0.6)
+                    .opacity(0.5)
 
-                // Near mountains (faster parallax)
+                // Near mountains
                 Image("parallax_mountains_near")
                     .resizable()
                     .scaledToFill()
                     .frame(width: geometry.size.width, height: geometry.size.height * 0.35)
                     .position(x: geometry.size.width / 2, y: geometry.size.height * 0.48)
-                    .opacity(0.7)
+                    .opacity(0.6)
+
+                // Trees/Shore (fastest - foreground)
+                Image("parallax_trees")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: geometry.size.width, height: geometry.size.height * 0.25)
+                    .position(x: geometry.size.width / 2, y: geometry.size.height * 0.85)
+                    .opacity(0.3)
             }
 
             // Water surface line (at 60% down the screen)
@@ -52,15 +61,8 @@ struct GameView: View {
                     Spacer()
                         .frame(height: geometry.size.height * 0.6)
 
-                    // Water gradient (bottom 40% of screen)
-                    LinearGradient(
-                        colors: [
-                            Color(red: 0.31, green: 0.70, blue: 0.75),  // Teal water surface
-                            Color(red: 0.20, green: 0.50, blue: 0.65)   // Darker deep water
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
+                    // Quiet Luxury water gradient (zen-inspired)
+                    QuietLuxuryTheme.waterGradient
 
                     Spacer()
                 }
@@ -182,18 +184,19 @@ struct GameView: View {
 
                     Spacer()
 
-                    // Menu Buttons
-                    HStack(spacing: 12) {
+                    // Menu Buttons (Quiet Luxury)
+                    HStack(spacing: QuietLuxuryTheme.Spacing.sm) {
                         Button {
                             HapticFeedback.selection()
                             showDailyReward = true
                         } label: {
                             Image(systemName: "gift.fill")
-                                .font(.title3)
-                                .foregroundStyle(.white)
+                                .font(.system(size: 18, weight: .light))
+                                .foregroundStyle(QuietLuxuryTheme.textPrimary)
                                 .frame(width: 44, height: 44)
-                                .background(.ultraThinMaterial)
+                                .background(QuietLuxuryTheme.surface.opacity(0.9))
                                 .clipShape(Circle())
+                                .shadow(color: QuietLuxuryTheme.charcoal.opacity(0.08), radius: 4, x: 0, y: 2)
                         }
 
                         Button {
@@ -201,11 +204,12 @@ struct GameView: View {
                             showPrestige = true
                         } label: {
                             Image(systemName: "star.fill")
-                                .font(.title3)
-                                .foregroundStyle(.white)
+                                .font(.system(size: 18, weight: .light))
+                                .foregroundStyle(QuietLuxuryTheme.textPrimary)
                                 .frame(width: 44, height: 44)
-                                .background(.ultraThinMaterial)
+                                .background(QuietLuxuryTheme.surface.opacity(0.9))
                                 .clipShape(Circle())
+                                .shadow(color: QuietLuxuryTheme.charcoal.opacity(0.08), radius: 4, x: 0, y: 2)
                         }
 
                         Button {
@@ -213,11 +217,12 @@ struct GameView: View {
                             showStatistics = true
                         } label: {
                             Image(systemName: "chart.bar.fill")
-                                .font(.title3)
-                                .foregroundStyle(.white)
+                                .font(.system(size: 18, weight: .light))
+                                .foregroundStyle(QuietLuxuryTheme.textPrimary)
                                 .frame(width: 44, height: 44)
-                                .background(.ultraThinMaterial)
+                                .background(QuietLuxuryTheme.surface.opacity(0.9))
                                 .clipShape(Circle())
+                                .shadow(color: QuietLuxuryTheme.charcoal.opacity(0.08), radius: 4, x: 0, y: 2)
                         }
 
                         Button {
@@ -225,11 +230,12 @@ struct GameView: View {
                             showSettings = true
                         } label: {
                             Image(systemName: "gearshape.fill")
-                                .font(.title3)
-                                .foregroundStyle(.white)
+                                .font(.system(size: 18, weight: .light))
+                                .foregroundStyle(QuietLuxuryTheme.textPrimary)
                                 .frame(width: 44, height: 44)
-                                .background(.ultraThinMaterial)
+                                .background(QuietLuxuryTheme.surface.opacity(0.9))
                                 .clipShape(Circle())
+                                .shadow(color: QuietLuxuryTheme.charcoal.opacity(0.08), radius: 4, x: 0, y: 2)
                         }
                     }
                 }
@@ -245,19 +251,15 @@ struct GameView: View {
                         HapticFeedback.selection()
                         showUpgrades = true
                     } label: {
-                        HStack {
+                        HStack(spacing: QuietLuxuryTheme.Spacing.xs) {
                             Image(systemName: "arrow.up.circle.fill")
+                                .font(.system(size: 16, weight: .medium))
                             Text("Upgrades")
-                                .font(.headline)
+                                .font(.system(size: 16, weight: .medium))
                         }
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 24)
-                        .padding(.vertical, 12)
-                        .background(Color.blue)
-                        .clipShape(Capsule())
-                        .shadow(radius: 4)
+                        .quietLuxuryButton(style: .primary, size: .medium)
                     }
-                    .padding(.bottom, 32)
+                    .padding(.bottom, QuietLuxuryTheme.Spacing.xl)
                 }
             }
         }

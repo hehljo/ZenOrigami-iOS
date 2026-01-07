@@ -171,6 +171,12 @@ class FallingItemManager {
         var collectedPearls: [UUID] = []
         var collectedLeaves: [UUID] = []
 
+        // DEBUG: Log current state
+        let totalItems = fallingDrops.count + fallingPearls.count + fallingLeaves.count
+        if totalItems > 0 && collisionCheckCount % 120 == 0 {  // Every 2 seconds
+            print("[Collision] Checking \(totalItems) items, boat at (\(boatPosition.x), \(boatPosition.y)), radius: \(collectionRadius)")
+        }
+
         // Check drops
         for item in fallingDrops where !item.isCollected {
             if isItemNearBoat(item) {
@@ -192,8 +198,11 @@ class FallingItemManager {
             }
         }
 
+        collisionCheckCount += 1
         return (collectedDrops, collectedPearls, collectedLeaves)
     }
+
+    private var collisionCheckCount = 0
 
     /// Check if an item is within collection radius of the boat
     private func isItemNearBoat(_ item: FallingItem) -> Bool {
